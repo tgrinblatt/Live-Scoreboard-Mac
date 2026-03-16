@@ -16,6 +16,10 @@
 		AA000007000000000000000A /* ScoreboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000007000000000000000A /* ScoreboardView.swift */; };
 		AA000008000000000000000A /* AdminPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000008000000000000000A /* AdminPanelView.swift */; };
 		AA000009000000000000000A /* LeaderboardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000009000000000000000A /* LeaderboardRowView.swift */; };
+		AA00000A000000000000000A /* LocalGameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000A000000000000000A /* LocalGameState.swift */; };
+		AA00000E100000000000000A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000E100000000000000A /* ColorTheme.swift */; };
+		AA00000C100000000000000A /* LocalScoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000C100000000000000A /* LocalScoringView.swift */; };
+		AA00000D100000000000000A /* OutputWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000D100000000000000A /* OutputWindowView.swift */; };
 		AA00000B000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00000B000000000000000A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +35,10 @@
 		BB000009000000000000000A /* LeaderboardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardRowView.swift; sourceTree = "<group>"; };
 		BB00000B000000000000000A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB00000C000000000000000A /* LiveScoreboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveScoreboard.entitlements; sourceTree = "<group>"; };
+		BB00000A000000000000000A /* LocalGameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGameState.swift; sourceTree = "<group>"; };
+		BB00000E100000000000000A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
+		BB00000C100000000000000A /* LocalScoringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalScoringView.swift; sourceTree = "<group>"; };
+		BB00000D100000000000000A /* OutputWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputWindowView.swift; sourceTree = "<group>"; };
 		BB00000D000000000000000A /* LiveScoreboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveScoreboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -71,6 +79,8 @@
 			children = (
 				BB000003000000000000000A /* AppSettings.swift */,
 				BB000004000000000000000A /* PlayerData.swift */,
+				BB00000A000000000000000A /* LocalGameState.swift */,
+				BB00000E100000000000000A /* ColorTheme.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -91,6 +101,8 @@
 				BB000007000000000000000A /* ScoreboardView.swift */,
 				BB000008000000000000000A /* AdminPanelView.swift */,
 				BB000009000000000000000A /* LeaderboardRowView.swift */,
+				BB00000C100000000000000A /* LocalScoringView.swift */,
+				BB00000D100000000000000A /* OutputWindowView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -181,6 +193,10 @@
 				AA000007000000000000000A /* ScoreboardView.swift in Sources */,
 				AA000008000000000000000A /* AdminPanelView.swift in Sources */,
 				AA000009000000000000000A /* LeaderboardRowView.swift in Sources */,
+				AA00000A000000000000000A /* LocalGameState.swift in Sources */,
+				AA00000E100000000000000A /* ColorTheme.swift in Sources */,
+				AA00000C100000000000000A /* LocalScoringView.swift in Sources */,
+				AA00000D100000000000000A /* OutputWindowView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -159,7 +159,7 @@ class GoogleSheetsService {
                 total = rounds.compactMap { $0 }.reduce(0, +)
             }
 
-            players.append(PlayerData(rank: 0, name: name, rounds: rounds, total: total))
+            players.append(PlayerData(name: name, rounds: rounds, total: total))
         }
 
         // Sort by total descending and assign ranks

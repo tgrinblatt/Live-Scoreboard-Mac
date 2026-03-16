@@ -19,11 +19,13 @@ class SettingsManager {
                 let data = try encoder.encode(settings)
                 try data.write(to: url)
             } catch {
-                let alert = NSAlert()
-                alert.messageText = "Export Failed"
-                alert.informativeText = error.localizedDescription
-                alert.alertStyle = .warning
-                alert.runModal()
+                DispatchQueue.main.async {
+                    let alert = NSAlert()
+                    alert.messageText = "Export Failed"
+                    alert.informativeText = error.localizedDescription
+                    alert.alertStyle = .warning
+                    alert.runModal()
+                }
             }
         }
     }
@@ -58,26 +60,26 @@ class SettingsManager {
 
     /// Copy all properties from one settings object to another
     static func applySettings(from source: AppSettings, to target: AppSettings) {
+        target.dataSourceMode = source.dataSourceMode
         target.sheetId = source.sheetId
+        target.pushMode = source.pushMode
         target.title = source.title
+        target.titleColor = source.titleColor
+        target.titleSize = source.titleSize
+        target.showTitleBar = source.showTitleBar
         target.backgroundMode = source.backgroundMode
         target.backgroundColor = source.backgroundColor
         target.backgroundGradientStart = source.backgroundGradientStart
         target.backgroundGradientEnd = source.backgroundGradientEnd
         target.showLeftLogo = source.showLeftLogo
-        target.leftLogoData = source.leftLogoData
         target.leftImagePadding = source.leftImagePadding
         target.showRightLogo = source.showRightLogo
-        target.rightLogoData = source.rightLogoData
         target.rightImagePadding = source.rightImagePadding
         target.showFooterText = source.showFooterText
         target.footerText = source.footerText
         target.showSyncStatus = source.showSyncStatus
         target.syncStatusStyle = source.syncStatusStyle
         target.refreshInterval = source.refreshInterval
-        target.titleColor = source.titleColor
-        target.titleSize = source.titleSize
-        target.showTitleBar = source.showTitleBar
         target.primaryColor = source.primaryColor
         target.secondaryColor = source.secondaryColor
         target.accentColor = source.accentColor
@@ -107,22 +109,28 @@ class SettingsManager {
         target.numRounds = source.numRounds
         target.numTeams = source.numTeams
         target.scoreboardVerticalHeight = source.scoreboardVerticalHeight
+        target.outputWidth = source.outputWidth
+        target.outputHeight = source.outputHeight
     }
 
-    /// Pick an image file and return its data
-    static func pickImage(completion: @escaping (Data?) -> Void) {
+    /// Pick an image file and save it as a logo
+    static func pickLogo(side: AppSettings.LogoSide, completion: @escaping (Bool) -> Void) {
         let panel = NSOpenPanel()
         panel.title = "Choose Logo Image"
-        panel.allowedContentTypes = [.png, .jpeg, .gif, .svg, .tiff]
+        panel.allowedContentTypes = [.png, .jpeg, .gif, .tiff]
         panel.allowsMultipleSelection = false
         panel.canChooseDirectories = false
 
         panel.begin { response in
-            guard response == .OK, let url = panel.url else {
-                completion(nil)
+            guard response == .OK, let url = panel.url,
+                  let data = try? Data(contentsOf: url) else {
+                completion(false)
                 return
             }
-            completion(try? Data(contentsOf: url))
+            AppSettings.saveLogoFile(data, side: side)
+            DispatchQueue.main.async {
+                completion(true)
+            }
         }
     }
 }

@@ -6,6 +6,13 @@ struct LeaderboardRowView: View {
     let rowHeight: CGFloat
 
     @State private var isHovered = false
+    @State private var scoreFlash: ScoreFlash? = nil
+    @State private var previousTotal: Double? = nil
+
+    struct ScoreFlash {
+        let isIncrease: Bool
+        let id = UUID()
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -35,10 +42,11 @@ struct LeaderboardRowView: View {
                         .frame(maxWidth: .infinity)
                 }
 
-                // Total
+                // Total with score change animation
                 Text(formatScore(player.total))
                     .font(settings.scaledFont(baseSize: 14, percentage: settings.rowTotalFontSize))
-                    .foregroundColor(settings.rowTotalColor.color)
+                    .foregroundColor(totalColor)
+                    .scaleEffect(scoreFlash != nil ? 1.2 : 1.0)
                     .frame(width: width * 0.10, alignment: .center)
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -46,11 +54,35 @@ struct LeaderboardRowView: View {
             .clipShape(rowClipShape)
             .offset(y: isHovered ? -1 : 0)
             .animation(.easeOut(duration: 0.15), value: isHovered)
-            .onHover { hovering in
-                isHovered = hovering
-            }
+            .onHover { hovering in isHovered = hovering }
         }
         .frame(height: rowHeight)
+        .onChange(of: player.total) { oldVal, newVal in
+            // Score change animation
+            if let prev = previousTotal, prev != newVal {
+                withAnimation(.easeOut(duration: 0.3)) {
+                    scoreFlash = ScoreFlash(isIncrease: newVal > prev)
+                }
+                // Reset flash after animation
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        scoreFlash = nil
+                    }
+                }
+            }
+            previousTotal = newVal
+        }
+        .onAppear {
+            previousTotal = player.total
+        }
+    }
+
+    /// Flash green for increase, red for decrease, default color otherwise
+    private var totalColor: Color {
+        if let flash = scoreFlash {
+            return flash.isIncrease ? .green : .red
+        }
+        return settings.rowTotalColor.color
     }
 
     @ViewBuilder
@@ -91,13 +123,10 @@ struct RowClipShape: Shape {
         switch shape {
         case .rectangle:
             return Path(rect)
-
         case .rounded:
             return Path(roundedRect: rect, cornerRadius: 8)
-
         case .pill:
             return Path(roundedRect: rect, cornerRadius: rect.height / 2)
-
         case .angled:
             var path = Path()
             let inset = rect.height * 0.3
@@ -107,9 +136,7 @@ struct RowClipShape: Shape {
             path.addLine(to: CGPoint(x: 0, y: rect.maxY))
             path.closeSubpath()
             return path
-
         case .notched:
-            // polygon(0% 0%, 95% 0%, 100% 25%, 100% 100%, 5% 100%, 0% 75%)
             var path = Path()
             path.move(to: CGPoint(x: 0, y: 0))
             path.addLine(to: CGPoint(x: rect.width * 0.95, y: 0))

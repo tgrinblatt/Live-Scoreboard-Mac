@@ -8,10 +8,13 @@ struct ScoreboardView: View {
     let countdown: Int
     let errorMessage: String?
 
+    // Cache logo images to avoid decoding from disk every render
+    @State private var leftLogoImage: NSImage? = nil
+    @State private var rightLogoImage: NSImage? = nil
+
     var body: some View {
         GeometryReader { geo in
             ZStack {
-                // Background
                 backgroundView
 
                 VStack(spacing: 0) {
@@ -34,11 +37,20 @@ struct ScoreboardView: View {
                 }
             }
         }
-        .aspectRatio(16.0/9.0, contentMode: .fit)
+        .aspectRatio(settings.outputAspectRatio, contentMode: .fit)
         .clipped()
+        .onAppear { loadLogos() }
+        .onChange(of: settings.showLeftLogo) { _, _ in loadLogos() }
+        .onChange(of: settings.showRightLogo) { _, _ in loadLogos() }
+    }
+
+    private func loadLogos() {
+        leftLogoImage = settings.showLeftLogo ? AppSettings.loadLogoImage(side: .left) : nil
+        rightLogoImage = settings.showRightLogo ? AppSettings.loadLogoImage(side: .right) : nil
     }
 
     // MARK: - Background
+
     @ViewBuilder
     private var backgroundView: some View {
         switch settings.backgroundMode {
@@ -54,15 +66,15 @@ struct ScoreboardView: View {
         case .color:
             settings.backgroundColor.color
         case .image:
-            settings.backgroundColor.color // Fallback
+            settings.backgroundColor.color
         }
     }
 
     // MARK: - Header
+
     private func headerSection(width: CGFloat) -> some View {
         HStack {
-            // Left logo
-            if settings.showLeftLogo, let data = settings.leftLogoData, let img = NSImage(data: data) {
+            if settings.showLeftLogo, let img = leftLogoImage {
                 Image(nsImage: img)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -74,7 +86,6 @@ struct ScoreboardView: View {
 
             Spacer()
 
-            // Title
             VStack(spacing: 4) {
                 Text(settings.title)
                     .font(.system(size: CGFloat(settings.titleSize) * 16, weight: .heavy))
@@ -90,8 +101,7 @@ struct ScoreboardView: View {
 
             Spacer()
 
-            // Right logo
-            if settings.showRightLogo, let data = settings.rightLogoData, let img = NSImage(data: data) {
+            if settings.showRightLogo, let img = rightLogoImage {
                 Image(nsImage: img)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -106,46 +116,45 @@ struct ScoreboardView: View {
     }
 
     // MARK: - Leaderboard
+
     private func leaderboardSection(size: CGSize) -> some View {
         VStack(spacing: 0) {
-            // Column headers
             columnHeaderRow(width: size.width * 0.92)
                 .padding(.bottom, 4)
 
-            if players.isEmpty && settings.sheetId.isEmpty {
+            if players.isEmpty {
                 Spacer()
                 VStack(spacing: 8) {
-                    Image(systemName: "antenna.radiowaves.left.and.right.slash")
-                        .font(.system(size: 40))
-                        .foregroundColor(settings.textColor.color.opacity(0.4))
-                    Text("Source Disconnected")
-                        .font(.system(size: 18, weight: .semibold))
-                        .foregroundColor(settings.textColor.color.opacity(0.5))
-                    Text("Open Settings to connect a Google Sheet")
-                        .font(.system(size: 13))
-                        .foregroundColor(settings.textColor.color.opacity(0.3))
-                }
-                Spacer()
-            } else if players.isEmpty {
-                Spacer()
-                if isLoading {
-                    ProgressIndicator()
-                } else {
-                    Text("No data available")
-                        .foregroundColor(settings.textColor.color.opacity(0.5))
+                    if isLoading {
+                        ProgressIndicator()
+                    } else {
+                        Image(systemName: settings.dataSourceMode == .localManual
+                              ? "gamecontroller" : "antenna.radiowaves.left.and.right.slash")
+                            .font(.system(size: 40))
+                            .foregroundColor(settings.textColor.color.opacity(0.4))
+                        Text(settings.dataSourceMode == .localManual
+                             ? "Set up a game to begin"
+                             : "Source Disconnected")
+                            .font(.system(size: 18, weight: .semibold))
+                            .foregroundColor(settings.textColor.color.opacity(0.5))
+                    }
                 }
                 Spacer()
             } else {
-                // Player rows
                 let availableHeight = size.height * CGFloat(settings.scoreboardVerticalHeight) / 100.0 * 0.75 - 30
                 let rowHeight = max(20, (availableHeight - CGFloat(players.count - 1) * CGFloat(settings.rowGap)) / CGFloat(players.count))
 
                 VStack(spacing: CGFloat(settings.rowGap)) {
-                    ForEach(players) { player in
+                    ForEach(Array(players.enumerated()), id: \.element.id) { index, player in
                         LeaderboardRowView(player: player, rowHeight: rowHeight)
                             .environmentObject(settings)
+                            .transition(.asymmetric(
+                                insertion: .move(edge: .trailing).combined(with: .opacity),
+                                removal: .opacity
+                            ))
                     }
                 }
+                .animation(.easeInOut(duration: 0.5), value: players.map(\.id))
             }
         }
     }
@@ -178,6 +187,7 @@ struct ScoreboardView: View {
     }
 
     // MARK: - Footer
+
     private func footerSection(width: CGFloat) -> some View {
         HStack {
             if settings.showFooterText {
@@ -216,7 +226,6 @@ struct ScoreboardView: View {
             .padding(.vertical, 4)
             .background(Color.black.opacity(0.3))
             .cornerRadius(4)
-
         case .compact:
             HStack(spacing: 4) {
                 Circle()
@@ -226,12 +235,10 @@ struct ScoreboardView: View {
                     .font(.system(size: 9, weight: .medium, design: .monospaced))
                     .foregroundColor(settings.textColor.color.opacity(0.6))
             }
-
         case .textOnly:
             Text("SYNC: \(timeText)")
                 .font(.system(size: 9, weight: .medium, design: .monospaced))
                 .foregroundColor(settings.textColor.color.opacity(0.6))
-
         case .micro:
             Circle()
                 .fill(isLoading ? Color.yellow : (lastUpdated != nil ? Color.green : Color.red))
