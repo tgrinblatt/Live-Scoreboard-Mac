@@ -10,6 +10,7 @@ struct OutputWindowView: View {
     @Binding var lastUpdated: Date?
     @Binding var countdown: Int
     @Binding var isBlacked: Bool
+    @EnvironmentObject var showModeState: ShowModeState
 
     var body: some View {
         ZStack {
@@ -21,7 +22,8 @@ struct OutputWindowView: View {
                     isLoading: isLoading,
                     lastUpdated: lastUpdated,
                     countdown: countdown,
-                    errorMessage: nil
+                    errorMessage: nil,
+                    showSyncOverlay: false
                 )
                 .environmentObject(settings)
                 .transition(.opacity)
@@ -29,5 +31,8 @@ struct OutputWindowView: View {
         }
         .animation(.easeInOut(duration: 0.5), value: isBlacked)
         .ignoresSafeArea()
+        .onExitCommand {
+            showModeState.isActive = false
+        }
     }
 }

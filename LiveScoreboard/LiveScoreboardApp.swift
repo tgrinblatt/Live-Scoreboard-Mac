@@ -9,6 +9,9 @@ class ShowModeState: ObservableObject {
     @Published var isLoading = false
     @Published var lastUpdated: Date? = nil
     @Published var countdown: Int = 0
+
+    /// AppKit-based presentation window controller for true fullscreen output
+    let presentationController = PresentationWindowController()
 }
 
 @main
@@ -59,25 +62,6 @@ struct LiveScoreboardApp: App {
                 .keyboardShortcut("s", modifiers: [.command, .option])
             }
         }
-
-        // Output window — opened when Show Mode activates
-        Window("Scoreboard Output", id: "output") {
-            OutputWindowView(
-                players: $showModeState.players,
-                isLoading: $showModeState.isLoading,
-                lastUpdated: $showModeState.lastUpdated,
-                countdown: $showModeState.countdown,
-                isBlacked: $showModeState.isBlacked
-            )
-            .environmentObject(settings)
-            .environmentObject(showModeState)
-        }
-        .defaultSize(
-            width: CGFloat(settings.outputWidth),
-            height: CGFloat(settings.outputHeight)
-        )
-        .windowStyle(.hiddenTitleBar)
-        .windowResizability(.contentSize)
     }
 }
 

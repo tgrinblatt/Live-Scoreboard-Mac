@@ -7,6 +7,8 @@ struct ScoreboardView: View {
     let lastUpdated: Date?
     let countdown: Int
     let errorMessage: String?
+    /// When false, hides the sync status from the scoreboard (used for broadcast output)
+    var showSyncOverlay: Bool = true
 
     // Cache logo images to avoid decoding from disk every render
     @State private var leftLogoImage: NSImage? = nil
@@ -202,7 +204,7 @@ struct ScoreboardView: View {
 
             Spacer()
 
-            if settings.showSyncStatus {
+            if settings.showSyncStatus && showSyncOverlay {
                 syncStatusView
             }
         }

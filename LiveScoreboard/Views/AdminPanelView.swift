@@ -158,14 +158,20 @@ struct AdminPanelView: View {
                     TextField("Footer Text", text: $settings.footerText)
                         .textFieldStyle(.roundedBorder)
                 }
-                Toggle("Show Sync Status", isOn: $settings.showSyncStatus)
-                if settings.showSyncStatus {
-                    Picker("Style", selection: $settings.syncStatusStyle) {
-                        Text("Broadcast").tag(AppSettings.SyncStatusStyle.broadcast)
-                        Text("Compact").tag(AppSettings.SyncStatusStyle.compact)
-                        Text("Text Only").tag(AppSettings.SyncStatusStyle.textOnly)
-                        Text("Micro").tag(AppSettings.SyncStatusStyle.micro)
+                if settings.dataSourceMode == .googleSheets {
+                    Toggle("Show Sync Status", isOn: $settings.showSyncStatus)
+                    if settings.showSyncStatus {
+                        Picker("Style", selection: $settings.syncStatusStyle) {
+                            Text("Broadcast").tag(AppSettings.SyncStatusStyle.broadcast)
+                            Text("Compact").tag(AppSettings.SyncStatusStyle.compact)
+                            Text("Text Only").tag(AppSettings.SyncStatusStyle.textOnly)
+                            Text("Micro").tag(AppSettings.SyncStatusStyle.micro)
+                        }
                     }
+                } else {
+                    Text("Sync status is only available in Google Sheets mode.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
             }
 

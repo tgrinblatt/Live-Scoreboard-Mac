@@ -6,7 +6,7 @@ import Combine
 class AppSettings: ObservableObject, Codable {
 
     // MARK: - Data Source
-    @Published var dataSourceMode: DataSourceMode = .googleSheets
+    @Published var dataSourceMode: DataSourceMode = .localManual
     @Published var sheetId: String = ""
     @Published var pushMode: Bool = true  // true = manual push, false = live update
 
@@ -85,8 +85,8 @@ class AppSettings: ObservableObject, Codable {
     // MARK: - Enums
 
     enum DataSourceMode: String, Codable, CaseIterable {
-        case googleSheets = "google-sheets"
         case localManual = "local-manual"
+        case googleSheets = "google-sheets"
         case csvFile = "csv-file"
 
         var displayName: String {
@@ -155,7 +155,7 @@ class AppSettings: ObservableObject, Codable {
 
     required init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        dataSourceMode = (try? c.decode(DataSourceMode.self, forKey: .dataSourceMode)) ?? .googleSheets
+        dataSourceMode = (try? c.decode(DataSourceMode.self, forKey: .dataSourceMode)) ?? .localManual
         sheetId = (try? c.decode(String.self, forKey: .sheetId)) ?? ""
         pushMode = (try? c.decode(Bool.self, forKey: .pushMode)) ?? true
         title = (try? c.decode(String.self, forKey: .title)) ?? "SCOREBOARD"

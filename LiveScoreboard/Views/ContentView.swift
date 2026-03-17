@@ -1,10 +1,10 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
-/// Main operator window: toolbar + optional settings sidebar + scoreboard/scoring content.
+/// Main operator window: startup screen → wizard → operator interface.
 struct ContentView: View {
     @EnvironmentObject var settings: AppSettings
     @ObservedObject var showModeState: ShowModeState
-    @Environment(\.openWindow) private var openWindow
 
     // MARK: - Data state
     @State private var displayPlayers: [PlayerData] = []
@@ -17,6 +17,14 @@ struct ContentView: View {
 
     // MARK: - UI state
     @State private var showSettings = false
+    @State private var appState: AppLaunchState = .startup
+    @State private var showNewGameWizard = false
+    @State private var showDisplayPicker = false
+
+    enum AppLaunchState {
+        case startup   // Show StartupView
+        case active    // Show main operator UI
+    }
 
     // MARK: - Timer & fetch guard
     @State private var timer: Timer? = nil
@@ -26,6 +34,65 @@ struct ContentView: View {
     @StateObject private var localGame = LocalGameState.load() ?? LocalGameState()
 
     var body: some View {
+        Group {
+            switch appState {
+            case .startup:
+                StartupView(
+                    onNewSession: {
+                        showNewGameWizard = true
+                    },
+                    onResume: {
+                        // localGame already loaded from disk via StateObject init
+                        settings.dataSourceMode = .localManual
+                        // Force-populate display immediately
+                        let players = localGame.toPlayerData(numRounds: settings.numRounds)
+                        displayPlayers = players
+                        stagedPlayers = players
+                        lastUpdated = Date()
+                        hasPendingChanges = false
+                        appState = .active
+                    },
+                    onLoadFile: {
+                        loadGameFromFile()
+                    }
+                )
+                .environmentObject(settings)
+                .sheet(isPresented: $showNewGameWizard) {
+                    GameSetupWizard(
+                        onComplete: { newGame in
+                            applyLoadedGame(newGame)
+                            showNewGameWizard = false
+                            appState = .active
+                        },
+                        onCancel: {
+                            showNewGameWizard = false
+                        }
+                    )
+                    .environmentObject(settings)
+                }
+
+            case .active:
+                operatorView
+            }
+        }
+        .onAppear {
+            // Auto-resume if preference is set and a saved session exists
+            if UserDefaults.standard.bool(forKey: "alwaysResume"),
+               LocalGameState.load() != nil {
+                settings.dataSourceMode = .localManual
+                let players = localGame.toPlayerData(numRounds: settings.numRounds)
+                displayPlayers = players
+                stagedPlayers = players
+                lastUpdated = Date()
+                hasPendingChanges = false
+                appState = .active
+            }
+        }
+    }
+
+    // MARK: - Main Operator View
+
+    private var operatorView: some View {
         HSplitView {
             // Settings sidebar (toggleable)
             if showSettings {
@@ -55,15 +122,16 @@ struct ContentView: View {
                 // Content based on data source mode
                 switch settings.dataSourceMode {
                 case .googleSheets, .csvFile:
-                    ScoreboardView(
-                        players: Array(displayPlayers.prefix(settings.numTeams)),
-                        isLoading: isLoading,
-                        lastUpdated: lastUpdated,
-                        countdown: countdown,
-                        errorMessage: errorMessage
+                    scaledPreview(
+                        ScoreboardView(
+                            players: Array(displayPlayers.prefix(settings.numTeams)),
+                            isLoading: isLoading,
+                            lastUpdated: lastUpdated,
+                            countdown: countdown,
+                            errorMessage: errorMessage
+                        )
+                        .environmentObject(settings)
                     )
-                    .environmentObject(settings)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 case .localManual:
                     HSplitView {
@@ -75,15 +143,16 @@ struct ContentView: View {
                         .environmentObject(settings)
                         .frame(minWidth: 380, idealWidth: 420)
 
-                        ScoreboardView(
-                            players: Array(displayPlayers.prefix(settings.numTeams)),
-                            isLoading: false,
-                            lastUpdated: lastUpdated,
-                            countdown: 0,
-                            errorMessage: nil
+                        scaledPreview(
+                            ScoreboardView(
+                                players: Array(displayPlayers.prefix(settings.numTeams)),
+                                isLoading: false,
+                                lastUpdated: lastUpdated,
+                                countdown: 0,
+                                errorMessage: nil
+                            )
+                            .environmentObject(settings)
                         )
-                        .environmentObject(settings)
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                 }
 
@@ -150,6 +219,29 @@ struct ContentView: View {
                 showModeState.isBlacked.toggle()
             }
         }
+        .sheet(isPresented: $showNewGameWizard) {
+            GameSetupWizard(
+                onComplete: { newGame in
+                    applyLoadedGame(newGame)
+                    showNewGameWizard = false
+                },
+                onCancel: {
+                    showNewGameWizard = false
+                }
+            )
+            .environmentObject(settings)
+        }
+        .sheet(isPresented: $showDisplayPicker) {
+            DisplayPickerView(
+                onSelect: { screen in
+                    showDisplayPicker = false
+                    startPresentation(on: screen)
+                },
+                onCancel: {
+                    showDisplayPicker = false
+                }
+            )
+        }
     }
 
     // MARK: - Toolbar
@@ -162,6 +254,16 @@ struct ContentView: View {
             }
             .buttonStyle(.bordered)
             .help("Toggle Settings (Cmd+Option+S)")
+
+            // New Game button
+            if settings.dataSourceMode == .localManual {
+                Button(action: { showNewGameWizard = true }) {
+                    Image(systemName: "plus.circle")
+                        .font(.system(size: 13))
+                }
+                .buttonStyle(.bordered)
+                .help("New Game")
+            }
 
             Divider().frame(height: 20)
 
@@ -331,19 +433,47 @@ struct ContentView: View {
 
     private func toggleShowMode() {
         if showModeState.isActive {
-            // Exit show mode
+            showModeState.presentationController.close()
             showModeState.isActive = false
             showModeState.isBlacked = false
         } else {
-            // Enter show mode — sync current data and open output window
-            showModeState.players = displayPlayers
-            showModeState.isLoading = isLoading
-            showModeState.lastUpdated = lastUpdated
-            showModeState.countdown = countdown
-            showModeState.isBlacked = false
-            showModeState.isActive = true
-            openWindow(id: "output")
+            if NSScreen.screens.count > 1 {
+                // Multiple monitors — let the operator choose
+                showDisplayPicker = true
+            } else {
+                // Single monitor — go directly
+                startPresentation(on: NSScreen.main)
+            }
         }
+    }
+
+    private func startPresentation(on screen: NSScreen?) {
+        showModeState.players = displayPlayers
+        showModeState.isLoading = isLoading
+        showModeState.lastUpdated = lastUpdated
+        showModeState.countdown = countdown
+        showModeState.isBlacked = false
+        showModeState.isActive = true
+
+        let outputView = OutputWindowView(
+            players: $showModeState.players,
+            isLoading: $showModeState.isLoading,
+            lastUpdated: $showModeState.lastUpdated,
+            countdown: $showModeState.countdown,
+            isBlacked: $showModeState.isBlacked
+        )
+        .environmentObject(settings)
+        .environmentObject(showModeState)
+
+        showModeState.presentationController.open(
+            content: outputView,
+            on: screen,
+            onEscape: { [weak showModeState] in
+                showModeState?.presentationController.close()
+                showModeState?.isActive = false
+                showModeState?.isBlacked = false
+            }
+        )
     }
 
     // MARK: - Data Fetching (Google Sheets)
@@ -409,6 +539,84 @@ struct ContentView: View {
         displayPlayers = stagedPlayers
         lastUpdated = Date()
         hasPendingChanges = false
+    }
+
+    // MARK: - Scaled Preview
+
+    /// Renders the scoreboard at the full output resolution then scales it down
+    /// to fit the available container space — pixel-accurate preview.
+    private func scaledPreview<V: View>(_ content: V) -> some View {
+        GeometryReader { geo in
+            let outW = CGFloat(settings.outputWidth)
+            let outH = CGFloat(settings.outputHeight)
+            let scaleX = geo.size.width / outW
+            let scaleY = geo.size.height / outH
+            let scale = min(scaleX, scaleY)
+
+            ZStack {
+                Color(nsColor: .windowBackgroundColor)
+
+                content
+                    .frame(width: outW, height: outH)
+                    .scaleEffect(scale)
+                    .frame(width: geo.size.width, height: geo.size.height)
+
+                // Preview label
+                VStack {
+                    HStack {
+                        Text("PREVIEW")
+                            .font(.system(size: 9, weight: .bold, design: .monospaced))
+                            .foregroundColor(.white.opacity(0.5))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.black.opacity(0.3))
+                            .cornerRadius(3)
+                            .padding(6)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+    }
+
+    // MARK: - Game Loading
+
+    private func applyLoadedGame(_ game: LocalGameState) {
+        // Replace the current local game state
+        localGame.teams = game.teams
+        localGame.roundConfigs = game.roundConfigs
+        localGame.currentRound = game.currentRound
+        localGame.sessionName = game.sessionName
+        localGame.save()
+        settings.dataSourceMode = .localManual
+        settings.numRounds = game.roundConfigs.count
+        settings.numTeams = game.teams.count
+        // Force-populate the scoreboard immediately, bypassing push mode.
+        // Push mode gates score *edits* during gameplay, not the initial board state.
+        let players = localGame.toPlayerData(numRounds: settings.numRounds)
+        displayPlayers = players
+        stagedPlayers = players
+        lastUpdated = Date()
+        hasPendingChanges = false
+    }
+
+    private func loadGameFromFile() {
+        let panel = NSOpenPanel()
+        panel.title = "Load Game File"
+        panel.allowedContentTypes = [UTType.json]
+        panel.allowsMultipleSelection = false
+        panel.canChooseDirectories = false
+        panel.begin { response in
+            guard response == .OK, let url = panel.url,
+                  let data = try? Data(contentsOf: url),
+                  let game = try? JSONDecoder().decode(LocalGameState.self, from: data) else { return }
+            DispatchQueue.main.async {
+                applyLoadedGame(game)
+                appState = .active
+            }
+        }
     }
 
     // MARK: - Helpers

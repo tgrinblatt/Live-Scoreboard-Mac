@@ -13,6 +13,7 @@
 		AA000004000000000000000A /* PlayerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000004000000000000000A /* PlayerData.swift */; };
 		AA000005000000000000000A /* GoogleSheetsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000005000000000000000A /* GoogleSheetsService.swift */; };
 		AA000006000000000000000A /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000006000000000000000A /* SettingsManager.swift */; };
+		AA000011100000000000000A /* PresentationWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000011100000000000000A /* PresentationWindowController.swift */; };
 		AA000007000000000000000A /* ScoreboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000007000000000000000A /* ScoreboardView.swift */; };
 		AA000008000000000000000A /* AdminPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000008000000000000000A /* AdminPanelView.swift */; };
 		AA000009000000000000000A /* LeaderboardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000009000000000000000A /* LeaderboardRowView.swift */; };
@@ -20,6 +21,9 @@
 		AA00000E100000000000000A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000E100000000000000A /* ColorTheme.swift */; };
 		AA00000C100000000000000A /* LocalScoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000C100000000000000A /* LocalScoringView.swift */; };
 		AA00000D100000000000000A /* OutputWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000D100000000000000A /* OutputWindowView.swift */; };
+		AA00000F100000000000000A /* StartupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000F100000000000000A /* StartupView.swift */; };
+		AA000010100000000000000A /* GameSetupWizard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000010100000000000000A /* GameSetupWizard.swift */; };
+		AA000012100000000000000A /* DisplayPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000012100000000000000A /* DisplayPickerView.swift */; };
 		AA00000B000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00000B000000000000000A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -30,6 +34,7 @@
 		BB000004000000000000000A /* PlayerData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerData.swift; sourceTree = "<group>"; };
 		BB000005000000000000000A /* GoogleSheetsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSheetsService.swift; sourceTree = "<group>"; };
 		BB000006000000000000000A /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
+		BB000011100000000000000A /* PresentationWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationWindowController.swift; sourceTree = "<group>"; };
 		BB000007000000000000000A /* ScoreboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreboardView.swift; sourceTree = "<group>"; };
 		BB000008000000000000000A /* AdminPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminPanelView.swift; sourceTree = "<group>"; };
 		BB000009000000000000000A /* LeaderboardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardRowView.swift; sourceTree = "<group>"; };
@@ -39,6 +44,9 @@
 		BB00000E100000000000000A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		BB00000C100000000000000A /* LocalScoringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalScoringView.swift; sourceTree = "<group>"; };
 		BB00000D100000000000000A /* OutputWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputWindowView.swift; sourceTree = "<group>"; };
+		BB00000F100000000000000A /* StartupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupView.swift; sourceTree = "<group>"; };
+		BB000010100000000000000A /* GameSetupWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetupWizard.swift; sourceTree = "<group>"; };
+		BB000012100000000000000A /* DisplayPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPickerView.swift; sourceTree = "<group>"; };
 		BB00000D000000000000000A /* LiveScoreboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveScoreboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -90,6 +98,7 @@
 			children = (
 				BB000005000000000000000A /* GoogleSheetsService.swift */,
 				BB000006000000000000000A /* SettingsManager.swift */,
+				BB000011100000000000000A /* PresentationWindowController.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -103,6 +112,9 @@
 				BB000009000000000000000A /* LeaderboardRowView.swift */,
 				BB00000C100000000000000A /* LocalScoringView.swift */,
 				BB00000D100000000000000A /* OutputWindowView.swift */,
+				BB00000F100000000000000A /* StartupView.swift */,
+				BB000010100000000000000A /* GameSetupWizard.swift */,
+				BB000012100000000000000A /* DisplayPickerView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -197,6 +209,10 @@
 				AA00000E100000000000000A /* ColorTheme.swift in Sources */,
 				AA00000C100000000000000A /* LocalScoringView.swift in Sources */,
 				AA00000D100000000000000A /* OutputWindowView.swift in Sources */,
+				AA00000F100000000000000A /* StartupView.swift in Sources */,
+				AA000010100000000000000A /* GameSetupWizard.swift in Sources */,
+				AA000012100000000000000A /* DisplayPickerView.swift in Sources */,
+				AA000011100000000000000A /* PresentationWindowController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

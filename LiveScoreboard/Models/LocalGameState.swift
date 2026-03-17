@@ -39,7 +39,7 @@ class LocalGameState: ObservableObject, Codable {
     // MARK: - Codable
 
     enum CodingKeys: String, CodingKey {
-        case teams, roundConfigs, currentRound
+        case teams, roundConfigs, currentRound, sessionName
     }
 
     init() {}
@@ -49,6 +49,7 @@ class LocalGameState: ObservableObject, Codable {
         teams = (try? c.decode([Team].self, forKey: .teams)) ?? []
         roundConfigs = (try? c.decode([RoundConfig].self, forKey: .roundConfigs)) ?? []
         currentRound = (try? c.decode(Int.self, forKey: .currentRound)) ?? 0
+        sessionName = (try? c.decode(String.self, forKey: .sessionName)) ?? ""
     }
 
     func encode(to encoder: Encoder) throws {
@@ -56,6 +57,7 @@ class LocalGameState: ObservableObject, Codable {
         try c.encode(teams, forKey: .teams)
         try c.encode(roundConfigs, forKey: .roundConfigs)
         try c.encode(currentRound, forKey: .currentRound)
+        try c.encode(sessionName, forKey: .sessionName)
     }
 
     // MARK: - Setup
@@ -177,9 +179,19 @@ class LocalGameState: ObservableObject, Codable {
         return dir.appendingPathComponent("local-game.json")
     }
 
+    @Published var sessionName: String = ""
+
     func save() {
         guard let data = try? JSONEncoder().encode(self) else { return }
         try? data.write(to: Self.saveURL)
+        // Also update session metadata
+        let meta = SessionMetadata(
+            name: sessionName,
+            numRounds: roundConfigs.count,
+            numTeams: teams.count,
+            lastSaved: Date()
+        )
+        meta.save()
     }
 
     static func load() -> LocalGameState? {
@@ -194,6 +206,8 @@ class LocalGameState: ObservableObject, Codable {
         teams = []
         roundConfigs = []
         currentRound = 0
+        sessionName = ""
         try? FileManager.default.removeItem(at: Self.saveURL)
+        SessionMetadata.remove()
     }
 }
