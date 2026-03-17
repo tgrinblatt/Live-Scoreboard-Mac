@@ -13,6 +13,7 @@ struct LocalScoringView: View {
     @State private var editingCell: EditingCell? = nil
     @State private var editValue: String = ""
     @State private var selectedTeamIndex: Int? = nil
+    @State private var showClearConfirm = false
 
     struct EditingCell: Equatable {
         let teamIndex: Int
@@ -27,6 +28,34 @@ struct LocalScoringView: View {
                 Text("Scoring Controller")
                     .font(.system(size: 14, weight: .semibold))
                 Spacer()
+                if !localGame.teams.isEmpty {
+                    if showClearConfirm {
+                        HStack(spacing: 4) {
+                            Text("Clear all scores?")
+                                .font(.system(size: 11))
+                                .foregroundColor(.red)
+                            Button("Yes, Clear") {
+                                clearAllScores()
+                                showClearConfirm = false
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.red)
+                            .controlSize(.small)
+                            Button("Cancel") {
+                                showClearConfirm = false
+                            }
+                            .buttonStyle(.bordered)
+                            .controlSize(.small)
+                        }
+                    } else {
+                        Button(action: { showClearConfirm = true }) {
+                            Image(systemName: "arrow.counterclockwise")
+                                .font(.system(size: 12))
+                        }
+                        .buttonStyle(.bordered)
+                        .help("Clear All Scores")
+                    }
+                }
                 Button(action: { isSettingUp.toggle() }) {
                     Image(systemName: "gearshape")
                         .font(.system(size: 12))
@@ -401,6 +430,16 @@ struct LocalScoringView: View {
         }
         localGame.addTeam(name: name)
         newTeamName = ""
+        onScoresChanged()
+    }
+
+    private func clearAllScores() {
+        let names = localGame.teams.map { $0.name }
+        let rounds = localGame.roundConfigs.count
+        let configs = localGame.roundConfigs
+        localGame.setupGame(teamNames: names, numRounds: rounds)
+        localGame.roundConfigs = configs // preserve point values
+        localGame.save()
         onScoresChanged()
     }
 
