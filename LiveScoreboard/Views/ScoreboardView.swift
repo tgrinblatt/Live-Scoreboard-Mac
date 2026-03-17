@@ -162,28 +162,23 @@ struct ScoreboardView: View {
     }
 
     private func columnHeaderRow(width: CGFloat) -> some View {
-        let headerSize = 10.0 * CGFloat(settings.headerFontSize) / 100.0
+        let headerFont = settings.scaledFont(baseSize: 10, percentage: settings.headerFontSize, weightName: settings.headerFontWeight)
+        let headerColor = settings.headerColor.color
 
         return HStack(spacing: 0) {
             Text("RK")
                 .frame(width: width * 0.06, alignment: .center)
-                .foregroundColor(settings.headerRankColor.color)
-
             Text("TEAM")
                 .frame(width: width * 0.28, alignment: .leading)
-                .foregroundColor(settings.headerNameColor.color)
-
             ForEach(1...settings.numRounds, id: \.self) { i in
                 Text("R\(i)")
                     .frame(maxWidth: .infinity)
-                    .foregroundColor(settings.headerRoundColor.color)
             }
-
             Text("TOTAL")
                 .frame(width: width * 0.10, alignment: .center)
-                .foregroundColor(settings.headerTotalColor.color)
         }
-        .font(.system(size: max(headerSize, 8), weight: .semibold))
+        .font(headerFont)
+        .foregroundColor(headerColor)
         .textCase(.uppercase)
         .tracking(1)
     }

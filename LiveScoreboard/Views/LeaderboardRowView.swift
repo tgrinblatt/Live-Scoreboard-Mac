@@ -21,14 +21,14 @@ struct LeaderboardRowView: View {
             HStack(spacing: 0) {
                 // Rank
                 Text(String(format: "%02d", player.rank))
-                    .font(settings.scaledFont(baseSize: 14, percentage: settings.rowRankFontSize))
-                    .foregroundColor(settings.rowRankColor.color)
+                    .font(settings.scaledFont(baseSize: 14, percentage: settings.rankingFontSize, weightName: settings.rankingFontWeight))
+                    .foregroundColor(settings.rankingColor.color)
                     .frame(width: width * 0.06, alignment: .center)
 
                 // Name
                 Text(player.name)
-                    .font(settings.scaledFont(baseSize: 14, percentage: settings.rowNameFontSize))
-                    .foregroundColor(settings.rowNameColor.color)
+                    .font(settings.scaledFont(baseSize: 14, percentage: settings.teamNamesFontSize, weightName: settings.teamNamesFontWeight))
+                    .foregroundColor(settings.teamNamesColor.color)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .frame(width: width * 0.28, alignment: .leading)
@@ -37,14 +37,14 @@ struct LeaderboardRowView: View {
                 ForEach(0..<settings.numRounds, id: \.self) { i in
                     let score = i < player.rounds.count ? player.rounds[i] : nil
                     Text(score.map { formatScore($0) } ?? "-")
-                        .font(settings.scaledFont(baseSize: 14, percentage: settings.rowRoundFontSize))
-                        .foregroundColor(settings.rowRoundColor.color)
+                        .font(settings.scaledFont(baseSize: 14, percentage: settings.roundScoresFontSize, weightName: settings.roundScoresFontWeight))
+                        .foregroundColor(settings.roundScoresColor.color)
                         .frame(maxWidth: .infinity)
                 }
 
                 // Total with score change animation
                 Text(formatScore(player.total))
-                    .font(settings.scaledFont(baseSize: 14, percentage: settings.rowTotalFontSize))
+                    .font(settings.scaledFont(baseSize: 14, percentage: settings.totalPointsFontSize, weightName: settings.totalPointsFontWeight))
                     .foregroundColor(totalColor)
                     .scaleEffect(scoreFlash != nil ? 1.2 : 1.0)
                     .frame(width: width * 0.10, alignment: .center)
@@ -82,7 +82,7 @@ struct LeaderboardRowView: View {
         if let flash = scoreFlash {
             return flash.isIncrease ? .green : .red
         }
-        return settings.rowTotalColor.color
+        return settings.totalPointsColor.color
     }
 
     @ViewBuilder

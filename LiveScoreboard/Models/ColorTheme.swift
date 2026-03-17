@@ -1,84 +1,92 @@
 import Foundation
 
-/// A named color theme that captures the key appearance settings.
+/// A named theme that captures appearance settings for the 5 text groups + colors.
 struct ColorTheme: Codable, Identifiable, Equatable {
     var id: String { name.lowercased() }
     var name: String
+    // Background
     var backgroundColor: CodableColor
     var backgroundGradientStart: CodableColor
     var backgroundGradientEnd: CodableColor
     var backgroundMode: AppSettings.BackgroundMode
+    // Global colors
     var primaryColor: CodableColor
     var secondaryColor: CodableColor
     var accentColor: CodableColor
     var textColor: CodableColor
     var titleColor: CodableColor
-    var headerRankColor: CodableColor
-    var headerNameColor: CodableColor
-    var headerRoundColor: CodableColor
-    var headerTotalColor: CodableColor
+    // Row appearance
     var rowColor: CodableColor
     var rowGradientStart: CodableColor
     var rowGradientEnd: CodableColor
     var rowMode: AppSettings.RowColorMode
     var rowOpacity: Double
-    var rowRankColor: CodableColor
-    var rowNameColor: CodableColor
-    var rowRoundColor: CodableColor
-    var rowTotalColor: CodableColor
+    // 5 text groups
+    var headerFontWeight: String?
+    var headerColor: CodableColor?
+    var rankingFontWeight: String?
+    var rankingColor: CodableColor?
+    var teamNamesFontWeight: String?
+    var teamNamesColor: CodableColor?
+    var roundScoresFontWeight: String?
+    var roundScoresColor: CodableColor?
+    var totalPointsFontWeight: String?
+    var totalPointsColor: CodableColor?
 
-    /// Apply this theme to the given settings
-    func apply(to settings: AppSettings) {
-        settings.backgroundColor = backgroundColor
-        settings.backgroundGradientStart = backgroundGradientStart
-        settings.backgroundGradientEnd = backgroundGradientEnd
-        settings.backgroundMode = backgroundMode
-        settings.primaryColor = primaryColor
-        settings.secondaryColor = secondaryColor
-        settings.accentColor = accentColor
-        settings.textColor = textColor
-        settings.titleColor = titleColor
-        settings.headerRankColor = headerRankColor
-        settings.headerNameColor = headerNameColor
-        settings.headerRoundColor = headerRoundColor
-        settings.headerTotalColor = headerTotalColor
-        settings.rowColor = rowColor
-        settings.rowGradientStart = rowGradientStart
-        settings.rowGradientEnd = rowGradientEnd
-        settings.rowMode = rowMode
-        settings.rowOpacity = rowOpacity
-        settings.rowRankColor = rowRankColor
-        settings.rowNameColor = rowNameColor
-        settings.rowRoundColor = rowRoundColor
-        settings.rowTotalColor = rowTotalColor
+    func apply(to s: AppSettings) {
+        s.backgroundColor = backgroundColor
+        s.backgroundGradientStart = backgroundGradientStart
+        s.backgroundGradientEnd = backgroundGradientEnd
+        s.backgroundMode = backgroundMode
+        s.primaryColor = primaryColor
+        s.secondaryColor = secondaryColor
+        s.accentColor = accentColor
+        s.textColor = textColor
+        s.titleColor = titleColor
+        s.rowColor = rowColor
+        s.rowGradientStart = rowGradientStart
+        s.rowGradientEnd = rowGradientEnd
+        s.rowMode = rowMode
+        s.rowOpacity = rowOpacity
+        if let v = headerFontWeight { s.headerFontWeight = v }
+        if let v = headerColor { s.headerColor = v }
+        if let v = rankingFontWeight { s.rankingFontWeight = v }
+        if let v = rankingColor { s.rankingColor = v }
+        if let v = teamNamesFontWeight { s.teamNamesFontWeight = v }
+        if let v = teamNamesColor { s.teamNamesColor = v }
+        if let v = roundScoresFontWeight { s.roundScoresFontWeight = v }
+        if let v = roundScoresColor { s.roundScoresColor = v }
+        if let v = totalPointsFontWeight { s.totalPointsFontWeight = v }
+        if let v = totalPointsColor { s.totalPointsColor = v }
     }
 
-    /// Capture current settings into a theme
-    static func capture(from settings: AppSettings, name: String) -> ColorTheme {
+    static func capture(from s: AppSettings, name: String) -> ColorTheme {
         ColorTheme(
             name: name,
-            backgroundColor: settings.backgroundColor,
-            backgroundGradientStart: settings.backgroundGradientStart,
-            backgroundGradientEnd: settings.backgroundGradientEnd,
-            backgroundMode: settings.backgroundMode,
-            primaryColor: settings.primaryColor,
-            secondaryColor: settings.secondaryColor,
-            accentColor: settings.accentColor,
-            textColor: settings.textColor,
-            titleColor: settings.titleColor,
-            headerRankColor: settings.headerRankColor,
-            headerNameColor: settings.headerNameColor,
-            headerRoundColor: settings.headerRoundColor,
-            headerTotalColor: settings.headerTotalColor,
-            rowColor: settings.rowColor,
-            rowGradientStart: settings.rowGradientStart,
-            rowGradientEnd: settings.rowGradientEnd,
-            rowMode: settings.rowMode,
-            rowOpacity: settings.rowOpacity,
-            rowRankColor: settings.rowRankColor,
-            rowNameColor: settings.rowNameColor,
-            rowRoundColor: settings.rowRoundColor,
-            rowTotalColor: settings.rowTotalColor
+            backgroundColor: s.backgroundColor,
+            backgroundGradientStart: s.backgroundGradientStart,
+            backgroundGradientEnd: s.backgroundGradientEnd,
+            backgroundMode: s.backgroundMode,
+            primaryColor: s.primaryColor,
+            secondaryColor: s.secondaryColor,
+            accentColor: s.accentColor,
+            textColor: s.textColor,
+            titleColor: s.titleColor,
+            rowColor: s.rowColor,
+            rowGradientStart: s.rowGradientStart,
+            rowGradientEnd: s.rowGradientEnd,
+            rowMode: s.rowMode,
+            rowOpacity: s.rowOpacity,
+            headerFontWeight: s.headerFontWeight,
+            headerColor: s.headerColor,
+            rankingFontWeight: s.rankingFontWeight,
+            rankingColor: s.rankingColor,
+            teamNamesFontWeight: s.teamNamesFontWeight,
+            teamNamesColor: s.teamNamesColor,
+            roundScoresFontWeight: s.roundScoresFontWeight,
+            roundScoresColor: s.roundScoresColor,
+            totalPointsFontWeight: s.totalPointsFontWeight,
+            totalPointsColor: s.totalPointsColor
         )
     }
 
@@ -97,19 +105,16 @@ struct ColorTheme: Codable, Identifiable, Equatable {
         accentColor: CodableColor(hex: "#334155"),
         textColor: CodableColor(.white),
         titleColor: CodableColor(.white),
-        headerRankColor: CodableColor(hex: "#94a3b8"),
-        headerNameColor: CodableColor(hex: "#94a3b8"),
-        headerRoundColor: CodableColor(hex: "#94a3b8"),
-        headerTotalColor: CodableColor(hex: "#94a3b8"),
         rowColor: CodableColor(hex: "#1e293b"),
         rowGradientStart: CodableColor(hex: "#1e293b"),
         rowGradientEnd: CodableColor(hex: "#334155"),
         rowMode: .color,
         rowOpacity: 0.6,
-        rowRankColor: CodableColor(.white),
-        rowNameColor: CodableColor(.white),
-        rowRoundColor: CodableColor(.white),
-        rowTotalColor: CodableColor(.white)
+        headerFontWeight: "Semi Bold", headerColor: CodableColor(hex: "#94a3b8"),
+        rankingFontWeight: "Bold", rankingColor: CodableColor(.white),
+        teamNamesFontWeight: "Regular", teamNamesColor: CodableColor(.white),
+        roundScoresFontWeight: "Regular", roundScoresColor: CodableColor(.white),
+        totalPointsFontWeight: "Bold", totalPointsColor: CodableColor(.white)
     )
 
     static let dark = ColorTheme(
@@ -123,19 +128,16 @@ struct ColorTheme: Codable, Identifiable, Equatable {
         accentColor: CodableColor(hex: "#333333"),
         textColor: CodableColor(hex: "#e0e0e0"),
         titleColor: CodableColor(hex: "#ffffff"),
-        headerRankColor: CodableColor(hex: "#666666"),
-        headerNameColor: CodableColor(hex: "#666666"),
-        headerRoundColor: CodableColor(hex: "#666666"),
-        headerTotalColor: CodableColor(hex: "#666666"),
         rowColor: CodableColor(hex: "#1a1a1a"),
         rowGradientStart: CodableColor(hex: "#1a1a1a"),
         rowGradientEnd: CodableColor(hex: "#2a2a2a"),
         rowMode: .color,
         rowOpacity: 0.8,
-        rowRankColor: CodableColor(hex: "#cccccc"),
-        rowNameColor: CodableColor(hex: "#ffffff"),
-        rowRoundColor: CodableColor(hex: "#cccccc"),
-        rowTotalColor: CodableColor(hex: "#ffffff")
+        headerFontWeight: "Bold", headerColor: CodableColor(hex: "#666666"),
+        rankingFontWeight: "Bold", rankingColor: CodableColor(hex: "#cccccc"),
+        teamNamesFontWeight: "Regular", teamNamesColor: CodableColor(hex: "#ffffff"),
+        roundScoresFontWeight: "Light", roundScoresColor: CodableColor(hex: "#cccccc"),
+        totalPointsFontWeight: "Bold", totalPointsColor: CodableColor(hex: "#ffffff")
     )
 
     static let light = ColorTheme(
@@ -149,19 +151,16 @@ struct ColorTheme: Codable, Identifiable, Equatable {
         accentColor: CodableColor(hex: "#d0d0d0"),
         textColor: CodableColor(hex: "#1a1a1a"),
         titleColor: CodableColor(hex: "#111111"),
-        headerRankColor: CodableColor(hex: "#666666"),
-        headerNameColor: CodableColor(hex: "#666666"),
-        headerRoundColor: CodableColor(hex: "#666666"),
-        headerTotalColor: CodableColor(hex: "#666666"),
         rowColor: CodableColor(hex: "#ffffff"),
         rowGradientStart: CodableColor(hex: "#ffffff"),
         rowGradientEnd: CodableColor(hex: "#f5f5f5"),
         rowMode: .color,
         rowOpacity: 0.9,
-        rowRankColor: CodableColor(hex: "#333333"),
-        rowNameColor: CodableColor(hex: "#111111"),
-        rowRoundColor: CodableColor(hex: "#333333"),
-        rowTotalColor: CodableColor(hex: "#111111")
+        headerFontWeight: "Medium", headerColor: CodableColor(hex: "#666666"),
+        rankingFontWeight: "Semi Bold", rankingColor: CodableColor(hex: "#333333"),
+        teamNamesFontWeight: "Regular", teamNamesColor: CodableColor(hex: "#111111"),
+        roundScoresFontWeight: "Regular", roundScoresColor: CodableColor(hex: "#333333"),
+        totalPointsFontWeight: "Semi Bold", totalPointsColor: CodableColor(hex: "#111111")
     )
 
     static let corporateNeutral = ColorTheme(
@@ -175,19 +174,16 @@ struct ColorTheme: Codable, Identifiable, Equatable {
         accentColor: CodableColor(hex: "#7f8c8d"),
         textColor: CodableColor(hex: "#ecf0f1"),
         titleColor: CodableColor(hex: "#ecf0f1"),
-        headerRankColor: CodableColor(hex: "#95a5a6"),
-        headerNameColor: CodableColor(hex: "#95a5a6"),
-        headerRoundColor: CodableColor(hex: "#95a5a6"),
-        headerTotalColor: CodableColor(hex: "#95a5a6"),
         rowColor: CodableColor(hex: "#34495e"),
         rowGradientStart: CodableColor(hex: "#34495e"),
         rowGradientEnd: CodableColor(hex: "#2c3e50"),
         rowMode: .color,
         rowOpacity: 0.7,
-        rowRankColor: CodableColor(hex: "#ecf0f1"),
-        rowNameColor: CodableColor(hex: "#ecf0f1"),
-        rowRoundColor: CodableColor(hex: "#bdc3c7"),
-        rowTotalColor: CodableColor(hex: "#ecf0f1")
+        headerFontWeight: "Medium", headerColor: CodableColor(hex: "#95a5a6"),
+        rankingFontWeight: "Medium", rankingColor: CodableColor(hex: "#ecf0f1"),
+        teamNamesFontWeight: "Regular", teamNamesColor: CodableColor(hex: "#ecf0f1"),
+        roundScoresFontWeight: "Regular", roundScoresColor: CodableColor(hex: "#bdc3c7"),
+        totalPointsFontWeight: "Medium", totalPointsColor: CodableColor(hex: "#ecf0f1")
     )
 
     // MARK: - Custom theme persistence

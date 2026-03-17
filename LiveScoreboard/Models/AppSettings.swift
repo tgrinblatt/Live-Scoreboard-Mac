@@ -45,14 +45,32 @@ class AppSettings: ObservableObject, Codable {
 
     // MARK: - Typography
     @Published var fontFamily: String = "SF Pro"
-    @Published var fontMemberPostScript: String = ""
 
-    // MARK: - Header
-    @Published var headerRankColor: CodableColor = CodableColor(hex: "#94a3b8")
-    @Published var headerNameColor: CodableColor = CodableColor(hex: "#94a3b8")
-    @Published var headerRoundColor: CodableColor = CodableColor(hex: "#94a3b8")
-    @Published var headerTotalColor: CodableColor = CodableColor(hex: "#94a3b8")
-    @Published var headerFontSize: Double = 65
+    // MARK: - Text Groups (5 unified groups)
+    // Header group — the entire header row (RK, TEAM, R1, R2, ..., TOTAL labels)
+    @Published var headerFontWeight: String = "Semi Bold"
+    @Published var headerColor: CodableColor = CodableColor(hex: "#94a3b8")
+    @Published var headerFontSize: Double = 200
+
+    // Ranking group — rank numbers on every row
+    @Published var rankingFontWeight: String = "Bold"
+    @Published var rankingColor: CodableColor = CodableColor(.white)
+    @Published var rankingFontSize: Double = 385
+
+    // Team Names group — team name text on every row
+    @Published var teamNamesFontWeight: String = "Regular"
+    @Published var teamNamesColor: CodableColor = CodableColor(.white)
+    @Published var teamNamesFontSize: Double = 389
+
+    // Round Scores group — all round score values across all rows
+    @Published var roundScoresFontWeight: String = "Regular"
+    @Published var roundScoresColor: CodableColor = CodableColor(.white)
+    @Published var roundScoresFontSize: Double = 385
+
+    // Total Points group — total column on every row
+    @Published var totalPointsFontWeight: String = "Bold"
+    @Published var totalPointsColor: CodableColor = CodableColor(.white)
+    @Published var totalPointsFontSize: Double = 401
 
     // MARK: - Row Design
     @Published var rowMode: RowColorMode = .color
@@ -62,16 +80,6 @@ class AppSettings: ObservableObject, Codable {
     @Published var rowOpacity: Double = 0.6
     @Published var rowShape: RowShape = .notched
     @Published var rowGap: Double = 4
-
-    // MARK: - Row Text
-    @Published var rowRankColor: CodableColor = CodableColor(.white)
-    @Published var rowRankFontSize: Double = 125
-    @Published var rowNameColor: CodableColor = CodableColor(.white)
-    @Published var rowNameFontSize: Double = 125
-    @Published var rowRoundColor: CodableColor = CodableColor(.white)
-    @Published var rowRoundFontSize: Double = 125
-    @Published var rowTotalColor: CodableColor = CodableColor(.white)
-    @Published var rowTotalFontSize: Double = 125
 
     // MARK: - Layout
     @Published var numRounds: Int = 4
@@ -125,11 +133,13 @@ class AppSettings: ObservableObject, Codable {
         case showFooterText, footerText, showSyncStatus, syncStatusStyle
         case refreshInterval
         case primaryColor, secondaryColor, accentColor, textColor
-        case fontFamily, fontMemberPostScript
-        case headerRankColor, headerNameColor, headerRoundColor, headerTotalColor, headerFontSize
+        case fontFamily
+        case headerFontWeight, headerColor, headerFontSize
+        case rankingFontWeight, rankingColor, rankingFontSize
+        case teamNamesFontWeight, teamNamesColor, teamNamesFontSize
+        case roundScoresFontWeight, roundScoresColor, roundScoresFontSize
+        case totalPointsFontWeight, totalPointsColor, totalPointsFontSize
         case rowMode, rowColor, rowGradientStart, rowGradientEnd, rowOpacity, rowShape, rowGap
-        case rowRankColor, rowRankFontSize, rowNameColor, rowNameFontSize
-        case rowRoundColor, rowRoundFontSize, rowTotalColor, rowTotalFontSize
         case numRounds, numTeams, scoreboardVerticalHeight
         case outputWidth, outputHeight
     }
@@ -180,12 +190,22 @@ class AppSettings: ObservableObject, Codable {
         accentColor = (try? c.decode(CodableColor.self, forKey: .accentColor)) ?? CodableColor(hex: "#334155")
         textColor = (try? c.decode(CodableColor.self, forKey: .textColor)) ?? CodableColor(.white)
         fontFamily = (try? c.decode(String.self, forKey: .fontFamily)) ?? "SF Pro"
-        fontMemberPostScript = (try? c.decode(String.self, forKey: .fontMemberPostScript)) ?? ""
-        headerRankColor = (try? c.decode(CodableColor.self, forKey: .headerRankColor)) ?? CodableColor(hex: "#94a3b8")
-        headerNameColor = (try? c.decode(CodableColor.self, forKey: .headerNameColor)) ?? CodableColor(hex: "#94a3b8")
-        headerRoundColor = (try? c.decode(CodableColor.self, forKey: .headerRoundColor)) ?? CodableColor(hex: "#94a3b8")
-        headerTotalColor = (try? c.decode(CodableColor.self, forKey: .headerTotalColor)) ?? CodableColor(hex: "#94a3b8")
-        headerFontSize = (try? c.decode(Double.self, forKey: .headerFontSize)) ?? 65
+        // 5 text groups
+        headerFontWeight = (try? c.decode(String.self, forKey: .headerFontWeight)) ?? "Semi Bold"
+        headerColor = (try? c.decode(CodableColor.self, forKey: .headerColor)) ?? CodableColor(hex: "#94a3b8")
+        headerFontSize = (try? c.decode(Double.self, forKey: .headerFontSize)) ?? 200
+        rankingFontWeight = (try? c.decode(String.self, forKey: .rankingFontWeight)) ?? "Bold"
+        rankingColor = (try? c.decode(CodableColor.self, forKey: .rankingColor)) ?? CodableColor(.white)
+        rankingFontSize = (try? c.decode(Double.self, forKey: .rankingFontSize)) ?? 385
+        teamNamesFontWeight = (try? c.decode(String.self, forKey: .teamNamesFontWeight)) ?? "Regular"
+        teamNamesColor = (try? c.decode(CodableColor.self, forKey: .teamNamesColor)) ?? CodableColor(.white)
+        teamNamesFontSize = (try? c.decode(Double.self, forKey: .teamNamesFontSize)) ?? 389
+        roundScoresFontWeight = (try? c.decode(String.self, forKey: .roundScoresFontWeight)) ?? "Regular"
+        roundScoresColor = (try? c.decode(CodableColor.self, forKey: .roundScoresColor)) ?? CodableColor(.white)
+        roundScoresFontSize = (try? c.decode(Double.self, forKey: .roundScoresFontSize)) ?? 385
+        totalPointsFontWeight = (try? c.decode(String.self, forKey: .totalPointsFontWeight)) ?? "Bold"
+        totalPointsColor = (try? c.decode(CodableColor.self, forKey: .totalPointsColor)) ?? CodableColor(.white)
+        totalPointsFontSize = (try? c.decode(Double.self, forKey: .totalPointsFontSize)) ?? 401
         rowMode = (try? c.decode(RowColorMode.self, forKey: .rowMode)) ?? .color
         rowColor = (try? c.decode(CodableColor.self, forKey: .rowColor)) ?? CodableColor(hex: "#1e293b")
         rowGradientStart = (try? c.decode(CodableColor.self, forKey: .rowGradientStart)) ?? CodableColor(hex: "#1e293b")
@@ -193,14 +213,6 @@ class AppSettings: ObservableObject, Codable {
         rowOpacity = (try? c.decode(Double.self, forKey: .rowOpacity)) ?? 0.6
         rowShape = (try? c.decode(RowShape.self, forKey: .rowShape)) ?? .notched
         rowGap = (try? c.decode(Double.self, forKey: .rowGap)) ?? 4
-        rowRankColor = (try? c.decode(CodableColor.self, forKey: .rowRankColor)) ?? CodableColor(.white)
-        rowRankFontSize = (try? c.decode(Double.self, forKey: .rowRankFontSize)) ?? 125
-        rowNameColor = (try? c.decode(CodableColor.self, forKey: .rowNameColor)) ?? CodableColor(.white)
-        rowNameFontSize = (try? c.decode(Double.self, forKey: .rowNameFontSize)) ?? 125
-        rowRoundColor = (try? c.decode(CodableColor.self, forKey: .rowRoundColor)) ?? CodableColor(.white)
-        rowRoundFontSize = (try? c.decode(Double.self, forKey: .rowRoundFontSize)) ?? 125
-        rowTotalColor = (try? c.decode(CodableColor.self, forKey: .rowTotalColor)) ?? CodableColor(.white)
-        rowTotalFontSize = (try? c.decode(Double.self, forKey: .rowTotalFontSize)) ?? 125
         numRounds = (try? c.decode(Int.self, forKey: .numRounds)) ?? 4
         numTeams = (try? c.decode(Int.self, forKey: .numTeams)) ?? 10
         scoreboardVerticalHeight = (try? c.decode(Double.self, forKey: .scoreboardVerticalHeight)) ?? 80
@@ -237,12 +249,21 @@ class AppSettings: ObservableObject, Codable {
         try c.encode(accentColor, forKey: .accentColor)
         try c.encode(textColor, forKey: .textColor)
         try c.encode(fontFamily, forKey: .fontFamily)
-        try c.encode(fontMemberPostScript, forKey: .fontMemberPostScript)
-        try c.encode(headerRankColor, forKey: .headerRankColor)
-        try c.encode(headerNameColor, forKey: .headerNameColor)
-        try c.encode(headerRoundColor, forKey: .headerRoundColor)
-        try c.encode(headerTotalColor, forKey: .headerTotalColor)
+        try c.encode(headerFontWeight, forKey: .headerFontWeight)
+        try c.encode(headerColor, forKey: .headerColor)
         try c.encode(headerFontSize, forKey: .headerFontSize)
+        try c.encode(rankingFontWeight, forKey: .rankingFontWeight)
+        try c.encode(rankingColor, forKey: .rankingColor)
+        try c.encode(rankingFontSize, forKey: .rankingFontSize)
+        try c.encode(teamNamesFontWeight, forKey: .teamNamesFontWeight)
+        try c.encode(teamNamesColor, forKey: .teamNamesColor)
+        try c.encode(teamNamesFontSize, forKey: .teamNamesFontSize)
+        try c.encode(roundScoresFontWeight, forKey: .roundScoresFontWeight)
+        try c.encode(roundScoresColor, forKey: .roundScoresColor)
+        try c.encode(roundScoresFontSize, forKey: .roundScoresFontSize)
+        try c.encode(totalPointsFontWeight, forKey: .totalPointsFontWeight)
+        try c.encode(totalPointsColor, forKey: .totalPointsColor)
+        try c.encode(totalPointsFontSize, forKey: .totalPointsFontSize)
         try c.encode(rowMode, forKey: .rowMode)
         try c.encode(rowColor, forKey: .rowColor)
         try c.encode(rowGradientStart, forKey: .rowGradientStart)
@@ -250,14 +271,6 @@ class AppSettings: ObservableObject, Codable {
         try c.encode(rowOpacity, forKey: .rowOpacity)
         try c.encode(rowShape, forKey: .rowShape)
         try c.encode(rowGap, forKey: .rowGap)
-        try c.encode(rowRankColor, forKey: .rowRankColor)
-        try c.encode(rowRankFontSize, forKey: .rowRankFontSize)
-        try c.encode(rowNameColor, forKey: .rowNameColor)
-        try c.encode(rowNameFontSize, forKey: .rowNameFontSize)
-        try c.encode(rowRoundColor, forKey: .rowRoundColor)
-        try c.encode(rowRoundFontSize, forKey: .rowRoundFontSize)
-        try c.encode(rowTotalColor, forKey: .rowTotalColor)
-        try c.encode(rowTotalFontSize, forKey: .rowTotalFontSize)
         try c.encode(numRounds, forKey: .numRounds)
         try c.encode(numTeams, forKey: .numTeams)
         try c.encode(scoreboardVerticalHeight, forKey: .scoreboardVerticalHeight)
@@ -288,17 +301,32 @@ class AppSettings: ObservableObject, Codable {
 
     // MARK: - Font Helpers
 
-    var effectiveFontName: String {
-        fontMemberPostScript.isEmpty ? fontFamily : fontMemberPostScript
+    /// Build a font for a specific element using its weight display name.
+    /// Looks up the PostScript name for the weight in the current font family.
+    func scaledFont(baseSize: CGFloat, percentage: Double, weightName: String = "Regular") -> Font {
+        let size = max(baseSize * CGFloat(percentage) / 100.0, 1)
+        let psName = Self.postScriptName(forWeight: weightName, inFamily: fontFamily)
+        return Font.custom(psName, size: size)
     }
 
-    var resolvedFont: Font {
-        Font.custom(effectiveFontName, size: 14)
+    /// Resolves a weight display name (e.g. "Bold", "Light Italic") to a PostScript name
+    /// within the given font family. Falls back to the family name if not found.
+    static func postScriptName(forWeight weightName: String, inFamily family: String) -> String {
+        let members = membersForFamily(family)
+        if let match = members.first(where: { $0.displayName.lowercased() == weightName.lowercased() }) {
+            return match.postScriptName
+        }
+        // Try partial match (e.g., "Bold" matches "Bold" in "Semi Bold")
+        if let match = members.first(where: { $0.displayName.lowercased().contains(weightName.lowercased()) }) {
+            return match.postScriptName
+        }
+        // Fallback: use the first member (usually Regular) or the family name
+        return members.first?.postScriptName ?? family
     }
 
-    func scaledFont(baseSize: CGFloat, percentage: Double) -> Font {
-        let size = baseSize * CGFloat(percentage) / 100.0
-        return Font.custom(effectiveFontName, size: max(size, 1))
+    /// Returns all available weight/style display names for the current font family
+    var availableWeightNames: [String] {
+        Self.membersForFamily(fontFamily).map(\.displayName)
     }
 
     static var availableFonts: [String] {
@@ -404,12 +432,21 @@ class AppSettings: ObservableObject, Codable {
         accentColor = fresh.accentColor
         textColor = fresh.textColor
         fontFamily = fresh.fontFamily
-        fontMemberPostScript = fresh.fontMemberPostScript
-        headerRankColor = fresh.headerRankColor
-        headerNameColor = fresh.headerNameColor
-        headerRoundColor = fresh.headerRoundColor
-        headerTotalColor = fresh.headerTotalColor
+        headerFontWeight = fresh.headerFontWeight
+        headerColor = fresh.headerColor
         headerFontSize = fresh.headerFontSize
+        rankingFontWeight = fresh.rankingFontWeight
+        rankingColor = fresh.rankingColor
+        rankingFontSize = fresh.rankingFontSize
+        teamNamesFontWeight = fresh.teamNamesFontWeight
+        teamNamesColor = fresh.teamNamesColor
+        teamNamesFontSize = fresh.teamNamesFontSize
+        roundScoresFontWeight = fresh.roundScoresFontWeight
+        roundScoresColor = fresh.roundScoresColor
+        roundScoresFontSize = fresh.roundScoresFontSize
+        totalPointsFontWeight = fresh.totalPointsFontWeight
+        totalPointsColor = fresh.totalPointsColor
+        totalPointsFontSize = fresh.totalPointsFontSize
         rowMode = fresh.rowMode
         rowColor = fresh.rowColor
         rowGradientStart = fresh.rowGradientStart
@@ -417,14 +454,6 @@ class AppSettings: ObservableObject, Codable {
         rowOpacity = fresh.rowOpacity
         rowShape = fresh.rowShape
         rowGap = fresh.rowGap
-        rowRankColor = fresh.rowRankColor
-        rowRankFontSize = fresh.rowRankFontSize
-        rowNameColor = fresh.rowNameColor
-        rowNameFontSize = fresh.rowNameFontSize
-        rowRoundColor = fresh.rowRoundColor
-        rowRoundFontSize = fresh.rowRoundFontSize
-        rowTotalColor = fresh.rowTotalColor
-        rowTotalFontSize = fresh.rowTotalFontSize
         numRounds = fresh.numRounds
         numTeams = fresh.numTeams
         scoreboardVerticalHeight = fresh.scoreboardVerticalHeight

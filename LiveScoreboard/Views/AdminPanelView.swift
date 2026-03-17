@@ -292,12 +292,9 @@ struct AdminPanelView: View {
                 }
             }
 
-            // Typography
+            // Typography — font family only, weights are per-element below
             SettingsSection(title: "Typography") {
-                FontPickerRow(
-                    selectedFamily: $settings.fontFamily,
-                    selectedMemberPS: $settings.fontMemberPostScript
-                )
+                FontFamilyPicker(selectedFamily: $settings.fontFamily)
             }
 
             // Global Colors
@@ -308,19 +305,17 @@ struct AdminPanelView: View {
                 ColorSettingRow(label: "Text", color: $settings.textColor)
             }
 
-            // Header
-            SettingsSection(title: "Header Styling") {
-                HStack {
-                    Text("Font Size")
-                    Slider(value: $settings.headerFontSize, in: 30...200)
-                    Text("\(Int(settings.headerFontSize))%")
-                        .monospacedDigit()
-                        .frame(width: 45)
-                }
-                ColorSettingRow(label: "Rank", color: $settings.headerRankColor)
-                ColorSettingRow(label: "Name", color: $settings.headerNameColor)
-                ColorSettingRow(label: "Round", color: $settings.headerRoundColor)
-                ColorSettingRow(label: "Total", color: $settings.headerTotalColor)
+            // Text Groups — 5 unified groups
+            SettingsSection(title: "Text Groups") {
+                TextGroupControl(label: "Header", fontWeight: $settings.headerFontWeight, color: $settings.headerColor, fontSize: $settings.headerFontSize, availableWeights: settings.availableWeightNames)
+                Divider()
+                TextGroupControl(label: "Ranking", fontWeight: $settings.rankingFontWeight, color: $settings.rankingColor, fontSize: $settings.rankingFontSize, availableWeights: settings.availableWeightNames)
+                Divider()
+                TextGroupControl(label: "Team Names", fontWeight: $settings.teamNamesFontWeight, color: $settings.teamNamesColor, fontSize: $settings.teamNamesFontSize, availableWeights: settings.availableWeightNames)
+                Divider()
+                TextGroupControl(label: "Round Scores", fontWeight: $settings.roundScoresFontWeight, color: $settings.roundScoresColor, fontSize: $settings.roundScoresFontSize, availableWeights: settings.availableWeightNames)
+                Divider()
+                TextGroupControl(label: "Total Points", fontWeight: $settings.totalPointsFontWeight, color: $settings.totalPointsColor, fontSize: $settings.totalPointsFontSize, availableWeights: settings.availableWeightNames)
             }
 
             // Row Design
@@ -361,16 +356,6 @@ struct AdminPanelView: View {
                     Text("\(Int(settings.rowGap))px")
                         .monospacedDigit()
                         .frame(width: 40)
-                }
-            }
-
-            // Row Text
-            SettingsSection(title: "Row Text") {
-                Group {
-                    fontSizeRow(label: "Rank", size: $settings.rowRankFontSize, color: $settings.rowRankColor)
-                    fontSizeRow(label: "Name", size: $settings.rowNameFontSize, color: $settings.rowNameColor)
-                    fontSizeRow(label: "Round", size: $settings.rowRoundFontSize, color: $settings.rowRoundColor)
-                    fontSizeRow(label: "Total", size: $settings.rowTotalFontSize, color: $settings.rowTotalColor)
                 }
             }
         }
@@ -452,22 +437,35 @@ struct AdminPanelView: View {
         }
     }
 
-    // MARK: - Helpers
+}
 
-    private func fontSizeRow(label: String, size: Binding<Double>, color: Binding<CodableColor>) -> some View {
+// MARK: - Text Group Control
+
+struct TextGroupControl: View {
+    let label: String
+    @Binding var fontWeight: String
+    @Binding var color: CodableColor
+    @Binding var fontSize: Double
+    let availableWeights: [String]
+
+    var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label).font(.caption).foregroundColor(.secondary)
-            HStack {
+            Text(label)
+                .font(.system(size: 12, weight: .semibold))
+            HStack(spacing: 8) {
+                FontWeightPicker(selectedWeight: $fontWeight, availableWeights: availableWeights)
+                    .frame(maxWidth: 130)
                 ColorPicker("", selection: Binding(
-                    get: { Color(nsColor: color.wrappedValue.nsColor) },
-                    set: { color.wrappedValue = CodableColor(NSColor($0)) }
+                    get: { Color(nsColor: color.nsColor) },
+                    set: { color = CodableColor(NSColor($0)) }
                 ))
                 .labelsHidden()
                 .frame(width: 30)
-                Slider(value: size, in: 50...500)
-                Text("\(Int(size.wrappedValue))%")
+                Slider(value: $fontSize, in: 50...600)
+                Text("\(Int(fontSize))%")
                     .monospacedDigit()
-                    .frame(width: 45)
+                    .font(.system(size: 11))
+                    .frame(width: 42, alignment: .trailing)
             }
         }
     }
@@ -512,117 +510,92 @@ struct ColorSettingRow: View {
     }
 }
 
-struct FontPickerRow: View {
+/// Font family picker with searchable dropdown. No weight selection — weights are per-element.
+struct FontFamilyPicker: View {
     @Binding var selectedFamily: String
-    @Binding var selectedMemberPS: String
     @State private var searchText = ""
-    @State private var isFamilyExpanded = false
+    @State private var isExpanded = false
 
     private var allFonts: [String] { AppSettings.availableFonts }
     private var filteredFonts: [String] {
         if searchText.isEmpty { return allFonts }
         return allFonts.filter { $0.localizedCaseInsensitiveContains(searchText) }
     }
-    private var members: [AppSettings.FontMember] {
-        AppSettings.membersForFamily(selectedFamily)
-    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            // Font Family
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Font Family").font(.caption).foregroundColor(.secondary)
-                Button(action: { withAnimation { isFamilyExpanded.toggle() } }) {
-                    HStack {
-                        Text(selectedFamily)
-                            .font(.custom(selectedFamily, size: 13))
-                        Spacer()
-                        Image(systemName: "chevron.down")
-                            .rotationEffect(.degrees(isFamilyExpanded ? 180 : 0))
-                            .font(.caption)
-                    }
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 5)
-                    .background(Color(nsColor: .textBackgroundColor))
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Font Family").font(.caption).foregroundColor(.secondary)
+            Button(action: { withAnimation { isExpanded.toggle() } }) {
+                HStack {
+                    Text(selectedFamily)
+                        .font(.custom(selectedFamily, size: 13))
+                    Spacer()
+                    Image(systemName: "chevron.down")
+                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                        .font(.caption)
                 }
-                .buttonStyle(.plain)
-
-                if isFamilyExpanded {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Image(systemName: "magnifyingglass").foregroundColor(.secondary).font(.caption)
-                            TextField("Search fonts...", text: $searchText)
-                                .textFieldStyle(.plain).font(.system(size: 11))
-                        }
-                        .padding(6)
-                        Divider()
-                        ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 0) {
-                                ForEach(filteredFonts, id: \.self) { fontName in
-                                    Button(action: {
-                                        selectedFamily = fontName
-                                        let m = AppSettings.membersForFamily(fontName)
-                                        selectedMemberPS = m.first?.postScriptName ?? ""
-                                        withAnimation { isFamilyExpanded = false }
-                                        searchText = ""
-                                    }) {
-                                        HStack {
-                                            Text(fontName).font(.custom(fontName, size: 12)).lineLimit(1)
-                                            Spacer()
-                                            if fontName == selectedFamily {
-                                                Image(systemName: "checkmark").font(.caption).foregroundColor(.accentColor)
-                                            }
-                                        }
-                                        .padding(.horizontal, 8).padding(.vertical, 4)
-                                        .contentShape(Rectangle())
-                                        .background(fontName == selectedFamily ? Color.accentColor.opacity(0.1) : Color.clear)
-                                    }
-                                    .buttonStyle(.plain)
-                                }
-                            }
-                        }
-                        .frame(height: 180)
-                    }
-                    .background(Color(nsColor: .textBackgroundColor))
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
-                }
+                .padding(.horizontal, 8)
+                .padding(.vertical, 5)
+                .background(Color(nsColor: .textBackgroundColor))
+                .cornerRadius(6)
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
             }
+            .buttonStyle(.plain)
 
-            // Weight / Style
-            if !members.isEmpty {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Weight / Style").font(.caption).foregroundColor(.secondary)
-                    Text("The quick brown fox jumps over the lazy dog")
-                        .font(.custom(selectedMemberPS.isEmpty ? selectedFamily : selectedMemberPS, size: 13))
-                        .lineLimit(1).foregroundColor(.secondary)
+            if isExpanded {
+                VStack(spacing: 0) {
+                    HStack {
+                        Image(systemName: "magnifyingglass").foregroundColor(.secondary).font(.caption)
+                        TextField("Search fonts...", text: $searchText)
+                            .textFieldStyle(.plain).font(.system(size: 11))
+                    }
+                    .padding(6)
+                    Divider()
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 0) {
-                            ForEach(members) { member in
-                                Button(action: { selectedMemberPS = member.postScriptName }) {
+                            ForEach(filteredFonts, id: \.self) { fontName in
+                                Button(action: {
+                                    selectedFamily = fontName
+                                    withAnimation { isExpanded = false }
+                                    searchText = ""
+                                }) {
                                     HStack {
-                                        Text(member.displayName).font(.custom(member.postScriptName, size: 12)).lineLimit(1)
+                                        Text(fontName).font(.custom(fontName, size: 12)).lineLimit(1)
                                         Spacer()
-                                        if member.postScriptName == selectedMemberPS {
+                                        if fontName == selectedFamily {
                                             Image(systemName: "checkmark").font(.caption).foregroundColor(.accentColor)
                                         }
                                     }
                                     .padding(.horizontal, 8).padding(.vertical, 4)
                                     .contentShape(Rectangle())
-                                    .background(member.postScriptName == selectedMemberPS ? Color.accentColor.opacity(0.1) : Color.clear)
+                                    .background(fontName == selectedFamily ? Color.accentColor.opacity(0.1) : Color.clear)
                                 }
                                 .buttonStyle(.plain)
                             }
                         }
                     }
-                    .frame(maxHeight: 140)
-                    .background(Color(nsColor: .textBackgroundColor))
-                    .cornerRadius(6)
-                    .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
+                    .frame(height: 180)
                 }
+                .background(Color(nsColor: .textBackgroundColor))
+                .cornerRadius(6)
+                .overlay(RoundedRectangle(cornerRadius: 6).stroke(Color(nsColor: .separatorColor), lineWidth: 1))
             }
         }
+    }
+}
+
+/// Compact weight picker for individual text elements.
+struct FontWeightPicker: View {
+    @Binding var selectedWeight: String
+    let availableWeights: [String]
+
+    var body: some View {
+        Picker("", selection: $selectedWeight) {
+            ForEach(availableWeights, id: \.self) { weight in
+                Text(weight).tag(weight)
+            }
+        }
+        .labelsHidden()
+        .controlSize(.small)
     }
 }
