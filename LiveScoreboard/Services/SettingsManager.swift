@@ -100,6 +100,8 @@ class SettingsManager {
         target.totalPointsFontWeight = source.totalPointsFontWeight
         target.totalPointsColor = source.totalPointsColor
         target.totalPointsFontSize = source.totalPointsFontSize
+        target.rowLayoutMode = source.rowLayoutMode
+        target.rankToNamePadding = source.rankToNamePadding
         target.rowMode = source.rowMode
         target.rowColor = source.rowColor
         target.rowGradientStart = source.rowGradientStart
@@ -110,6 +112,10 @@ class SettingsManager {
         target.numRounds = source.numRounds
         target.numTeams = source.numTeams
         target.scoreboardVerticalHeight = source.scoreboardVerticalHeight
+        target.scoreboardYOffset = source.scoreboardYOffset
+        target.titleYOffset = source.titleYOffset
+        target.leftLogoYOffset = source.leftLogoYOffset
+        target.rightLogoYOffset = source.rightLogoYOffset
         target.outputWidth = source.outputWidth
         target.outputHeight = source.outputHeight
     }

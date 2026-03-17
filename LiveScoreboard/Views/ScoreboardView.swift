@@ -28,6 +28,7 @@ struct ScoreboardView: View {
                     leaderboardSection(size: geo.size)
                         .frame(height: geo.size.height * CGFloat(settings.scoreboardVerticalHeight) / 100.0 * 0.75)
                         .padding(.horizontal, geo.size.width * 0.04)
+                        .offset(y: CGFloat(settings.scoreboardYOffset))
 
                     Spacer()
 
@@ -82,6 +83,7 @@ struct ScoreboardView: View {
                     .aspectRatio(contentMode: .fit)
                     .padding(CGFloat(settings.leftImagePadding))
                     .frame(width: width * 0.15)
+                    .offset(y: CGFloat(settings.leftLogoYOffset))
             } else {
                 Spacer().frame(width: width * 0.15)
             }
@@ -100,6 +102,7 @@ struct ScoreboardView: View {
                         .frame(width: 200, height: 3)
                 }
             }
+            .offset(y: CGFloat(settings.titleYOffset))
 
             Spacer()
 
@@ -109,6 +112,7 @@ struct ScoreboardView: View {
                     .aspectRatio(contentMode: .fit)
                     .padding(CGFloat(settings.rightImagePadding))
                     .frame(width: width * 0.15)
+                    .offset(y: CGFloat(settings.rightLogoYOffset))
             } else {
                 Spacer().frame(width: width * 0.15)
             }
@@ -164,10 +168,22 @@ struct ScoreboardView: View {
     private func columnHeaderRow(width: CGFloat) -> some View {
         let headerFont = settings.scaledFont(baseSize: 10, percentage: settings.headerFontSize, weightName: settings.headerFontWeight)
         let headerColor = settings.headerColor.color
+        let padding = CGFloat(settings.rankToNamePadding)
+        let needsInternalPadding = settings.rowLayoutMode != .fullRow
+        let baseRankWidth = width * 0.06
+        let rankWidth = (settings.rowLayoutMode == .splitRank && settings.rowShape == .angled)
+            ? baseRankWidth * 1.6
+            : baseRankWidth
 
         return HStack(spacing: 0) {
             Text("RK")
-                .frame(width: width * 0.06, alignment: .center)
+                .frame(width: rankWidth, alignment: .center)
+            // Match the rank-to-name gap used by the rows
+            Spacer().frame(width: padding)
+            // Match internal left padding when in split/no-rank modes
+            if needsInternalPadding {
+                Spacer().frame(width: 28 + CGFloat(settings.teamNameInternalPadding))
+            }
             Text("TEAM")
                 .frame(width: width * 0.28, alignment: .leading)
             ForEach(1...settings.numRounds, id: \.self) { i in

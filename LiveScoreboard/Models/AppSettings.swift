@@ -73,6 +73,9 @@ class AppSettings: ObservableObject, Codable {
     @Published var totalPointsFontSize: Double = 401
 
     // MARK: - Row Design
+    @Published var rowLayoutMode: RowLayoutMode = .fullRow
+    @Published var rankToNamePadding: Double = 10
+    @Published var teamNameInternalPadding: Double = 0  // fine-tune offset added to base 28px padding
     @Published var rowMode: RowColorMode = .color
     @Published var rowColor: CodableColor = CodableColor(hex: "#1e293b")
     @Published var rowGradientStart: CodableColor = CodableColor(hex: "#1e293b")
@@ -85,6 +88,12 @@ class AppSettings: ObservableObject, Codable {
     @Published var numRounds: Int = 4
     @Published var numTeams: Int = 10
     @Published var scoreboardVerticalHeight: Double = 80
+
+    // MARK: - Vertical Positioning
+    @Published var scoreboardYOffset: Double = 0
+    @Published var titleYOffset: Double = 0
+    @Published var leftLogoYOffset: Double = 0
+    @Published var rightLogoYOffset: Double = 0
 
     // MARK: - Output Resolution (Phase 2)
     @Published var outputWidth: Int = 1920
@@ -102,6 +111,20 @@ class AppSettings: ObservableObject, Codable {
             case .googleSheets: return "Google Sheets"
             case .localManual: return "Local Manual"
             case .csvFile: return "CSV File"
+            }
+        }
+    }
+
+    enum RowLayoutMode: String, Codable, CaseIterable {
+        case fullRow = "full-row"
+        case splitRank = "split-rank"
+        case noRankBackground = "no-rank-background"
+
+        var displayName: String {
+            switch self {
+            case .fullRow: return "Full Row"
+            case .splitRank: return "Split Rank"
+            case .noRankBackground: return "No Rank BG"
             }
         }
     }
@@ -139,8 +162,10 @@ class AppSettings: ObservableObject, Codable {
         case teamNamesFontWeight, teamNamesColor, teamNamesFontSize
         case roundScoresFontWeight, roundScoresColor, roundScoresFontSize
         case totalPointsFontWeight, totalPointsColor, totalPointsFontSize
+        case rowLayoutMode, rankToNamePadding, teamNameInternalPadding
         case rowMode, rowColor, rowGradientStart, rowGradientEnd, rowOpacity, rowShape, rowGap
         case numRounds, numTeams, scoreboardVerticalHeight
+        case scoreboardYOffset, titleYOffset, leftLogoYOffset, rightLogoYOffset
         case outputWidth, outputHeight
     }
 
@@ -206,6 +231,9 @@ class AppSettings: ObservableObject, Codable {
         totalPointsFontWeight = (try? c.decode(String.self, forKey: .totalPointsFontWeight)) ?? "Bold"
         totalPointsColor = (try? c.decode(CodableColor.self, forKey: .totalPointsColor)) ?? CodableColor(.white)
         totalPointsFontSize = (try? c.decode(Double.self, forKey: .totalPointsFontSize)) ?? 401
+        rowLayoutMode = (try? c.decode(RowLayoutMode.self, forKey: .rowLayoutMode)) ?? .fullRow
+        rankToNamePadding = (try? c.decode(Double.self, forKey: .rankToNamePadding)) ?? 10
+        teamNameInternalPadding = (try? c.decode(Double.self, forKey: .teamNameInternalPadding)) ?? 0
         rowMode = (try? c.decode(RowColorMode.self, forKey: .rowMode)) ?? .color
         rowColor = (try? c.decode(CodableColor.self, forKey: .rowColor)) ?? CodableColor(hex: "#1e293b")
         rowGradientStart = (try? c.decode(CodableColor.self, forKey: .rowGradientStart)) ?? CodableColor(hex: "#1e293b")
@@ -216,6 +244,10 @@ class AppSettings: ObservableObject, Codable {
         numRounds = (try? c.decode(Int.self, forKey: .numRounds)) ?? 4
         numTeams = (try? c.decode(Int.self, forKey: .numTeams)) ?? 10
         scoreboardVerticalHeight = (try? c.decode(Double.self, forKey: .scoreboardVerticalHeight)) ?? 80
+        scoreboardYOffset = (try? c.decode(Double.self, forKey: .scoreboardYOffset)) ?? 0
+        titleYOffset = (try? c.decode(Double.self, forKey: .titleYOffset)) ?? 0
+        leftLogoYOffset = (try? c.decode(Double.self, forKey: .leftLogoYOffset)) ?? 0
+        rightLogoYOffset = (try? c.decode(Double.self, forKey: .rightLogoYOffset)) ?? 0
         outputWidth = (try? c.decode(Int.self, forKey: .outputWidth)) ?? 1920
         outputHeight = (try? c.decode(Int.self, forKey: .outputHeight)) ?? 1080
         setupAutoSave()
@@ -264,6 +296,9 @@ class AppSettings: ObservableObject, Codable {
         try c.encode(totalPointsFontWeight, forKey: .totalPointsFontWeight)
         try c.encode(totalPointsColor, forKey: .totalPointsColor)
         try c.encode(totalPointsFontSize, forKey: .totalPointsFontSize)
+        try c.encode(rowLayoutMode, forKey: .rowLayoutMode)
+        try c.encode(rankToNamePadding, forKey: .rankToNamePadding)
+        try c.encode(teamNameInternalPadding, forKey: .teamNameInternalPadding)
         try c.encode(rowMode, forKey: .rowMode)
         try c.encode(rowColor, forKey: .rowColor)
         try c.encode(rowGradientStart, forKey: .rowGradientStart)
@@ -274,6 +309,10 @@ class AppSettings: ObservableObject, Codable {
         try c.encode(numRounds, forKey: .numRounds)
         try c.encode(numTeams, forKey: .numTeams)
         try c.encode(scoreboardVerticalHeight, forKey: .scoreboardVerticalHeight)
+        try c.encode(scoreboardYOffset, forKey: .scoreboardYOffset)
+        try c.encode(titleYOffset, forKey: .titleYOffset)
+        try c.encode(leftLogoYOffset, forKey: .leftLogoYOffset)
+        try c.encode(rightLogoYOffset, forKey: .rightLogoYOffset)
         try c.encode(outputWidth, forKey: .outputWidth)
         try c.encode(outputHeight, forKey: .outputHeight)
     }
@@ -447,6 +486,9 @@ class AppSettings: ObservableObject, Codable {
         totalPointsFontWeight = fresh.totalPointsFontWeight
         totalPointsColor = fresh.totalPointsColor
         totalPointsFontSize = fresh.totalPointsFontSize
+        rowLayoutMode = fresh.rowLayoutMode
+        rankToNamePadding = fresh.rankToNamePadding
+        teamNameInternalPadding = fresh.teamNameInternalPadding
         rowMode = fresh.rowMode
         rowColor = fresh.rowColor
         rowGradientStart = fresh.rowGradientStart
@@ -457,6 +499,10 @@ class AppSettings: ObservableObject, Codable {
         numRounds = fresh.numRounds
         numTeams = fresh.numTeams
         scoreboardVerticalHeight = fresh.scoreboardVerticalHeight
+        scoreboardYOffset = fresh.scoreboardYOffset
+        titleYOffset = fresh.titleYOffset
+        leftLogoYOffset = fresh.leftLogoYOffset
+        rightLogoYOffset = fresh.rightLogoYOffset
         outputWidth = fresh.outputWidth
         outputHeight = fresh.outputHeight
         Self.removeLogoFile(side: .left)

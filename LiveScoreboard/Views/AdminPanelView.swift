@@ -76,6 +76,13 @@ struct AdminPanelView: View {
                 }
                 ColorSettingRow(label: "Title Color", color: $settings.titleColor)
                 Toggle("Show Title Bar", isOn: $settings.showTitleBar)
+                HStack {
+                    Text("Y Offset")
+                    Slider(value: $settings.titleYOffset, in: -200...200)
+                    Text("\(Int(settings.titleYOffset))px")
+                        .monospacedDigit()
+                        .frame(width: 45)
+                }
             }
 
             // Logos
@@ -112,6 +119,15 @@ struct AdminPanelView: View {
                                 .font(.caption)
                             Slider(value: $settings.leftImagePadding, in: 0...50)
                         }
+                        HStack {
+                            Text("Y Offset")
+                                .font(.caption)
+                            Slider(value: $settings.leftLogoYOffset, in: -200...200)
+                            Text("\(Int(settings.leftLogoYOffset))px")
+                                .monospacedDigit()
+                                .font(.caption)
+                                .frame(width: 40)
+                        }
                     }
 
                     Divider()
@@ -146,6 +162,15 @@ struct AdminPanelView: View {
                             Text("Padding")
                                 .font(.caption)
                             Slider(value: $settings.rightImagePadding, in: 0...50)
+                        }
+                        HStack {
+                            Text("Y Offset")
+                                .font(.caption)
+                            Slider(value: $settings.rightLogoYOffset, in: -200...200)
+                            Text("\(Int(settings.rightLogoYOffset))px")
+                                .monospacedDigit()
+                                .font(.caption)
+                                .frame(width: 40)
                         }
                     }
                 }
@@ -191,6 +216,13 @@ struct AdminPanelView: View {
                     Text("\(Int(settings.scoreboardVerticalHeight))%")
                         .monospacedDigit()
                         .frame(width: 40)
+                }
+                HStack {
+                    Text("Y Offset")
+                    Slider(value: $settings.scoreboardYOffset, in: -200...200)
+                    Text("\(Int(settings.scoreboardYOffset))px")
+                        .monospacedDigit()
+                        .frame(width: 45)
                 }
             }
         }
@@ -320,6 +352,31 @@ struct AdminPanelView: View {
 
             // Row Design
             SettingsSection(title: "Row Design") {
+                Picker("Layout", selection: $settings.rowLayoutMode) {
+                    ForEach(AppSettings.RowLayoutMode.allCases, id: \.self) { mode in
+                        Text(mode.displayName).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+
+                HStack {
+                    Text("Rank Padding")
+                    Slider(value: $settings.rankToNamePadding, in: 0...80)
+                    Text("\(Int(settings.rankToNamePadding))px")
+                        .monospacedDigit()
+                        .frame(width: 40)
+                }
+
+                if settings.rowLayoutMode != .fullRow {
+                    HStack {
+                        Text("Team Padding")
+                        Slider(value: $settings.teamNameInternalPadding, in: -15...30)
+                        Text("\(Int(settings.teamNameInternalPadding))px")
+                            .monospacedDigit()
+                            .frame(width: 40)
+                    }
+                }
+
                 Picker("Shape", selection: $settings.rowShape) {
                     Text("Rectangle").tag(AppSettings.RowShape.rectangle)
                     Text("Rounded").tag(AppSettings.RowShape.rounded)

@@ -13,18 +13,18 @@
 		AA000004000000000000000A /* PlayerData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000004000000000000000A /* PlayerData.swift */; };
 		AA000005000000000000000A /* GoogleSheetsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000005000000000000000A /* GoogleSheetsService.swift */; };
 		AA000006000000000000000A /* SettingsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000006000000000000000A /* SettingsManager.swift */; };
-		AA000011100000000000000A /* PresentationWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000011100000000000000A /* PresentationWindowController.swift */; };
 		AA000007000000000000000A /* ScoreboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000007000000000000000A /* ScoreboardView.swift */; };
 		AA000008000000000000000A /* AdminPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000008000000000000000A /* AdminPanelView.swift */; };
 		AA000009000000000000000A /* LeaderboardRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000009000000000000000A /* LeaderboardRowView.swift */; };
 		AA00000A000000000000000A /* LocalGameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000A000000000000000A /* LocalGameState.swift */; };
-		AA00000E100000000000000A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000E100000000000000A /* ColorTheme.swift */; };
+		AA00000B000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00000B000000000000000A /* Assets.xcassets */; };
 		AA00000C100000000000000A /* LocalScoringView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000C100000000000000A /* LocalScoringView.swift */; };
 		AA00000D100000000000000A /* OutputWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000D100000000000000A /* OutputWindowView.swift */; };
+		AA00000E100000000000000A /* ColorTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000E100000000000000A /* ColorTheme.swift */; };
 		AA00000F100000000000000A /* StartupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00000F100000000000000A /* StartupView.swift */; };
 		AA000010100000000000000A /* GameSetupWizard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000010100000000000000A /* GameSetupWizard.swift */; };
+		AA000011100000000000000A /* PresentationWindowController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000011100000000000000A /* PresentationWindowController.swift */; };
 		AA000012100000000000000A /* DisplayPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB000012100000000000000A /* DisplayPickerView.swift */; };
-		AA00000B000000000000000A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BB00000B000000000000000A /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -34,20 +34,20 @@
 		BB000004000000000000000A /* PlayerData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerData.swift; sourceTree = "<group>"; };
 		BB000005000000000000000A /* GoogleSheetsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleSheetsService.swift; sourceTree = "<group>"; };
 		BB000006000000000000000A /* SettingsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsManager.swift; sourceTree = "<group>"; };
-		BB000011100000000000000A /* PresentationWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationWindowController.swift; sourceTree = "<group>"; };
 		BB000007000000000000000A /* ScoreboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScoreboardView.swift; sourceTree = "<group>"; };
 		BB000008000000000000000A /* AdminPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdminPanelView.swift; sourceTree = "<group>"; };
 		BB000009000000000000000A /* LeaderboardRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardRowView.swift; sourceTree = "<group>"; };
+		BB00000A000000000000000A /* LocalGameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGameState.swift; sourceTree = "<group>"; };
 		BB00000B000000000000000A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BB00000C000000000000000A /* LiveScoreboard.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = LiveScoreboard.entitlements; sourceTree = "<group>"; };
-		BB00000A000000000000000A /* LocalGameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalGameState.swift; sourceTree = "<group>"; };
-		BB00000E100000000000000A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		BB00000C100000000000000A /* LocalScoringView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalScoringView.swift; sourceTree = "<group>"; };
+		BB00000D000000000000000A /* LiveScoreboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveScoreboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB00000D100000000000000A /* OutputWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OutputWindowView.swift; sourceTree = "<group>"; };
+		BB00000E100000000000000A /* ColorTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorTheme.swift; sourceTree = "<group>"; };
 		BB00000F100000000000000A /* StartupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartupView.swift; sourceTree = "<group>"; };
 		BB000010100000000000000A /* GameSetupWizard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetupWizard.swift; sourceTree = "<group>"; };
+		BB000011100000000000000A /* PresentationWindowController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationWindowController.swift; sourceTree = "<group>"; };
 		BB000012100000000000000A /* DisplayPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayPickerView.swift; sourceTree = "<group>"; };
-		BB00000D000000000000000A /* LiveScoreboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveScoreboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,7 +155,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1540;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					EE000001000000000000000A = {
 						CreatedOnToolsVersion = 15.4;
@@ -253,6 +253,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -276,6 +277,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -315,6 +317,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -331,6 +334,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 			};
 			name = Release;
@@ -344,8 +348,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -370,8 +377,11 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_APP_SANDBOX = YES;
 				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -409,7 +419,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = EE000002000000000000000A /* Project object */;
 }

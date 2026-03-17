@@ -49,11 +49,10 @@ struct LocalScoringView: View {
                         }
                     } else {
                         Button(action: { showClearConfirm = true }) {
-                            Image(systemName: "arrow.counterclockwise")
-                                .font(.system(size: 12))
+                            Text("CLEAR SCORES")
+                                .font(.system(size: 10, weight: .semibold))
                         }
                         .buttonStyle(.bordered)
-                        .help("Clear All Scores")
                     }
                 }
                 Button(action: { isSettingUp.toggle() }) {

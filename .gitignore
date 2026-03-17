@@ -19,3 +19,8 @@ xcuserdata/
 .build/
 Packages/
 Package.resolved
+
+# Claude working files (not for public repo)
+Claude Instructions/
+Claude Notes/
+Design Files/
